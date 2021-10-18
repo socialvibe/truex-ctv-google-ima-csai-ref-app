@@ -7,7 +7,7 @@
 1. Build the project via either
    * `npm run build-tizen`
       * Creates a .wgt installer that refers to the hosted web app, by default 
-        at `https://ctv.truex.com/web/ref-app-google-IMA/master/index.html`
+        at `https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html`
    * `npm run build-tizen-local`
       * Creates a .wgt installer that has the reference app embedded inside of it.
       * The means the tizen API is available to at least the choice card.

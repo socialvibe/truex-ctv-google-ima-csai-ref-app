@@ -22,7 +22,7 @@ pipeline {
                 echo 'Beginning deploy stage.'
                 script {
                     echo "Using branch '${BRANCH_NAME}'."
-                    def path = "ctv.truex.com/web/ref-app-google-IMA/${BRANCH_NAME}"
+                    def path = "ctv.truex.com/web/ref-app-IMA-CSAI/${BRANCH_NAME}"
                     sh "aws s3 cp dist s3://${path}/ --recursive --exclude \"*.js.map\" --acl public-read"
                     echo "Updated: https://${path}/index.html"
                 }
