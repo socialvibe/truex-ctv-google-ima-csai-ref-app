@@ -1,0 +1,46 @@
+coverage/
+stats.json
+/dist/
+/deploy/build
+/deploy/netrc
+html_exports/
+/tmp
+/node_modules/
+.DS_Store
+
+/src/config.js
+
+/.sass-cache/
+
+# IntelliJ project files
+/.idea/
+*.iml
+
+# Xbox build, user artifacts
+/platforms/XboxOne/RefApp/RefApp.csproj.user
+/platforms/XboxOne/.vs/
+/platforms/XboxOne/RefApp/bin/
+/platforms/XboxOne/RefApp/obj/
+/platforms/XboxOne/RefApp/AppPackages/
+/platforms/XboxOne/RefApp/BundleArtifacts/
+
+# PS4 build artifacts
+/US0007*/
+LauncherApp/app/libs/
+
+# PS5 build artifacts
+/platforms/PS5/launcher-app/*.pkg
+/platforms/PS5/launcher-app/*.naps_metric.json
+
+# Fire TV / Android build artifacts
+/.gradle/
+/platforms/AndroidFireTV/.gradle/
+
+# Tizen build artifacts
+.manifest.tmp
+/platforms/Tizen/build/
+/platforms/Tizen/LauncherApp/.sign/
+/platforms/Tizen/LauncherApp/*.wgt
+
+# LG build artifacts
+/platforms/LG/LauncherApp/*.ipk
