@@ -16,8 +16,7 @@ export class VideoController {
             throw new Error('video owner not found: ' + videoOwner);
         }
         this.video = null;
-        this.hlsController = null;
-        this.streamManager = null;
+        this.adManager = null;
         this.videoStream = null;
 
         this.controlBarDiv = document.querySelector(controlBarSelector);
@@ -124,7 +123,7 @@ export class VideoController {
 
         // We are showing our own Ad UI, so just pass in a disconnected place holder to keep the manager happy.
         const adUI = document.createElement('div');
-        this.streamManager = new StreamManager(video, adUI);
+        this.adManager = new StreamManager(video, adUI);
 
         var streamEvents;
         if (isFirstStart) {
@@ -146,13 +145,13 @@ export class VideoController {
                 StreamEvent.Type.AD_BREAK_ENDED
             ];
         }
-        this.streamManager.addEventListener(streamEvents, this.onStreamEvent, false);
+        this.adManager.addEventListener(streamEvents, this.onStreamEvent, false);
 
         const streamRequest = new google.ima.dai.api.VODStreamRequest();
         streamRequest.contentSourceId = videoStream.google_content_id;
         streamRequest.videoId = videoStream.google_video_id;
         streamRequest.apiKey = null; // unused since stream is not encrypted
-        this.streamManager.requestStream(streamRequest);
+        this.adManager.requestStream(streamRequest);
 
         if (!isFirstStart) {
             this.attachVideo();
@@ -189,10 +188,10 @@ export class VideoController {
 
         this.videoOwner.removeChild(video); // remove from the DOM
 
-        this.streamManager.reset();
+        this.adManager.reset();
 
         this.video = null;
-        this.streamManager = null;
+        this.adManager = null;
         this.seekTarget = undefined;
     }
 
@@ -207,7 +206,7 @@ export class VideoController {
         switch (e.type) {
             case StreamEvent.Type.CUEPOINTS_CHANGED:
                 if (this.adBreaks.length == 0) {
-                    this.streamManager.removeEventListener(StreamEvent.Type.CUEPOINTS_CHANGED, this.onStreamEvent);
+                    this.adManager.removeEventListener(StreamEvent.Type.CUEPOINTS_CHANGED, this.onStreamEvent);
                     this.setAdBreaks(streamData.cuepoints);
                 }
                 break;
