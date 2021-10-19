@@ -7,6 +7,11 @@
         <![CDATA[https://get.truex.com/ab292e1309b91434c836511c865f6fbd89f17184/vast?network_user_id=539b855a-135a-4ee7-affa-7643cee93f2f&dimension_1=Oolong+the+Terrible+English+Uncut&dimension_2=1&dimension_4=27384&dimension_5=evergreen&stream_position=midroll]]></VASTAdTagURI>
     </Wrapper>
   </Ad>
+  <!-- Need <Ad> entries for:
+  https://ctv.truex.com/assets/airline-720p.mp4
+  https://ctv.truex.com/assets/coffee-720p.mp4
+  https://ctv.truex.com/assets/petcare-720p.mp4
+  -->
   <Ad id="330593056700597688">
     <InLine>
       <AdSystem>AdSense/AdX</AdSystem>
