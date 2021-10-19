@@ -15,6 +15,10 @@ module.exports = function(env) {
                 './src/simple/simple.js',
                 './src/simple/simple.scss'
             ],
+            integrated: [
+                './src/integrated/integrated.js',
+                './src/integrated/integrated.scss'
+            ],
         },
         output: {
             filename: '[name].[hash].js',
@@ -66,6 +70,11 @@ module.exports = function(env) {
                 filename: 'index.html',
                 template: './src/simple/index.html',
                 chunks: ['simple'],
+            }),
+            new HtmlWebpackPlugin({
+                filename: 'integrated.html',
+                template: './src/integrated/integrated.html',
+                chunks: ['integrated'],
             })
         ],
         devtool: 'cheap-module-source-map'
