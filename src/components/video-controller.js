@@ -7,9 +7,6 @@ import pauseSvg from '../assets/pause-button.svg';
 import { AdBreak } from "./ad-break";
 import { InteractiveAd } from "./interactive-ad";
 
-const StreamEvent = google.ima.dai.api.StreamEvent;
-const StreamManager = google.ima.dai.api.StreamManager;
-
 export class VideoController {
     constructor(videoOwner, controlBarSelector, platform) {
         this.debug = false; // set to true to enable more verbose video time logging.
@@ -118,7 +115,9 @@ export class VideoController {
         const overlay = this.videoOwner.firstChild;
         this.videoOwner.insertBefore(this.video, overlay);
 
-        video.poster = 'noposter'; // work around grey play icon on Android TV.
+        if (this.platform.isAndroidTV) {
+            video.poster = 'noposter'; // work around grey play icon on Android TV.
+        }
 
         video.addEventListener('playing', this.onVideoStarted);
         video.addEventListener("timeupdate", this.onVideoTimeUpdate);

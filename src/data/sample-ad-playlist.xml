@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VAST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd" version="4.0">
+  <Ad id="1" sequence="1">
+    <Wrapper>
+      <AdSystem>trueX</AdSystem>
+      <VASTAdTagURI>
+        <![CDATA[https://get.truex.com/ab292e1309b91434c836511c865f6fbd89f17184/vast?network_user_id=539b855a-135a-4ee7-affa-7643cee93f2f&dimension_1=Oolong+the+Terrible+English+Uncut&dimension_2=1&dimension_4=27384&dimension_5=evergreen&stream_position=midroll]]></VASTAdTagURI>
+    </Wrapper>
+  </Ad>
+  <Ad id="330593056700597688">
+    <InLine>
+      <AdSystem>AdSense/AdX</AdSystem>
+      <AdTitle>Airline</AdTitle>
+      <Creatives>
+        <Creative id="2814335735" sequence="1">
+          <Linear skipoffset="00:00:05">
+            <Duration>00:00:23</Duration>
+            <MediaFiles>
+              <MediaFile id="1" delivery="progressive" type="video/mp4" width="1280" height="720">
+                <![CDATA[https://assets.dspunion.com/cdn-adn/vh/21/05/27/15/42/f2ac9e889ab97632306cace7a494c504.mp4]]></MediaFile>
+            </MediaFiles>
+          </Linear>
+        </Creative>
+      </Creatives>
+    </InLine>
+  </Ad>
+</VAST>
