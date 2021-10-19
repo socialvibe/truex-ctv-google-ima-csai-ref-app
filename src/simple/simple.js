@@ -1,14 +1,19 @@
-import config from './config';
+
+import config from '../config';
 import { DebugLog }        from 'truex-shared/components/debug-log';
 import { inputActions } from 'truex-shared/focus_manager/txm_input_actions';
 import { Focusable } from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
 import { ScriptLoader } from "truex-shared/utils/loaders";
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
-import { LoadingSpinner } from "./components/loading-spinner";
-import { VideoController } from "./components/video-controller";
+import { LoadingSpinner } from "../components/loading-spinner";
+import { VideoController } from "../components/video-controller";
 
 
+/**
+ * Demonstrates the direct use of the client-side IMA SDK.
+ * I.e. we implement the video player ourselves, the idea being that approach should be generalizable to any player.
+ */
 (function() {
     const focusManager = new TXMFocusManager();
     const platform = focusManager.platform;
@@ -29,7 +34,7 @@ import { VideoController } from "./components/video-controller";
     videoController.loadingSpinner = spinner;
     videoController.closeVideoAction = returnToParentPage;
 
-    const videoStreams = require('./data/video-streams.json');
+    const videoStreams = require('../data/video-streams.json');
     let currentVideoStream = videoStreams[0];
 
     function hidePage() {

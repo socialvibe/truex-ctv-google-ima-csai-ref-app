@@ -11,9 +11,9 @@ module.exports = function(env) {
     return {
         mode: 'development',
         entry: {
-            main: [
-                './src/main.js',
-                './src/main.scss'
+            simple: [
+                './src/simple/simple.js',
+                './src/simple/simple.scss'
             ],
         },
         output: {
@@ -64,8 +64,8 @@ module.exports = function(env) {
         plugins: [
             new HtmlWebpackPlugin({
                 filename: 'index.html',
-                template: './src/index.html',
-                chunks: ['main'],
+                template: './src/simple/index.html',
+                chunks: ['simple'],
             })
         ],
         devtool: 'cheap-module-source-map'
