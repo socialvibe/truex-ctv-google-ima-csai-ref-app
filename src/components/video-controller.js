@@ -25,6 +25,7 @@ export class VideoController {
         this.adDisplayContainer = null;
         this.adsLoader = null;
         this.currentAd = null;
+        this.currentAdProgress = null;
 
         this.controlBarDiv = document.querySelector(controlBarSelector);
         this.isControlBarVisible = false;
@@ -226,9 +227,12 @@ export class VideoController {
             google.ima.AdEvent.Type.ALL_ADS_COMPLETED, onAdEvent);
 
         // Listen to any additional events, if necessary.
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, onAdEvent);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, onAdEvent);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, onAdEvent);
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, this.onAdEvent);
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, this.onAdEvent);
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, this.onAdEvent);
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, this.onAdEvent);
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, this.onAdEvent);
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, this.onAdEvent);
 
         this.refreshAdMarkers = true;
         const childNodes = this.adMarkersDiv.children;
@@ -253,26 +257,17 @@ export class VideoController {
                 break;
 
             case google.ima.AdEvent.Type.STARTED:
-                // This event indicates the ad has started - the video player
-                // can adjust the UI, for example display a pause button and
-                // remaining time.
-                if (ad.isLinear()) {
-                    // For a linear ad, a timer can be started to poll for
-                    // the remaining time.
-                    intervalTimer = setInterval(
-                        function() {
-                            var remainingTime = this.adsManager.getRemainingTime();
-                        },
-                        300);  // every 300ms
-                }
+                this.refresh();
                 break;
+
+            case google.ima.AdEvent.Type.AD_PROGRESS:
+                this.currentAdProgress = ad.getAdData();
+                this.refresh();
+                break;
+
             case google.ima.AdEvent.Type.COMPLETE:
-                // This event indicates the ad has finished - the video player
-                // can perform appropriate UI actions, such as removing the timer for
-                // remaining time detection.
-                if (ad.isLinear()) {
-                    clearInterval(intervalTimer);
-                }
+                this.currentAd = null;
+                this.refresh();
                 break;
         }
     }
@@ -438,17 +433,15 @@ export class VideoController {
     }
 
     stepVideo(forward) {
-        if (!this.video) return; // user stepping should only happen on an active video
-        if (this.currentAd) return; // cannot step thru ads.
-
-        const currTime = this.currVideoTime;
-
-        if (this.hasAdBreakAt(currTime)) {
+        if (this.currentAd) {
             // Don't allow user seeking during ad playback
             // Just show the control bar so the user can see the timeline.
             this.showControlBar();
             return;
         }
+
+        if (!this.video) return; // user stepping should only happen on an active video
+        const currTime = this.currVideoTime;
 
         let seekStep = 10; // default seek step seconds
         const seekChunks = 80; // otherwise, divide up videos in this many chunks for seek steps
@@ -534,23 +527,17 @@ export class VideoController {
         }
     }
 
-    skipAd(adBreak) {
-        if (!adBreak) {
-            adBreak = this.getAdBreakAt(this.currVideoTime);
-        }
+    skipAd() {
+        if (!this.currentAd) return;
+        const adBreak = this.adBreaks[this.currentAd.getPodInfo().getPodIndex()];
         if (adBreak) {
             adBreak.completed = true;
-
             console.log(`ad break ${adBreak.index} skipped at: ${this.timeDebugDisplay(adBreak.startTime)}`);
-
-            this.hideControlBar();
-
-            this.adsManager.discardAdBreak();
-            this.adsManager.resume();
-
-            // skip a little past the end to avoid a flash of the final ad frame
-            // this.seekTo(adBreak.endTime + 1, this.isControlBarVisible);
         }
+
+        this.hideControlBar();
+
+        this.adsManager.discardAdBreak();
     }
 
     startAd(googleAd) {
@@ -631,40 +618,7 @@ export class VideoController {
 
         this.showLoadingSpinner(false);
 
-        const adBreak = this.getAdBreakAt(newTime);
-        if (adBreak) {
-            if (adBreak.completed) {
-                if (Math.abs(adBreak.startTime - newTime) <= 1) {
-                    // Skip over already completed ads if we run into their start times.
-                    this.skipAd(adBreak);
-                    return;
-                }
-            } else if (!adBreak.started) {
-                // We will get Google IMA ad start events when the ad is encountered
-
-            // } else if (Math.abs(adBreak.endTime - newTime) <= 1) {
-            //     // The user has viewed the whole ad.
-            //     adBreak.completed = true;
-            }
-        }
-
         this.refresh();
-    }
-
-    hasAdBreakAt(rawVideoTime) {
-        const adBreak = this.getAdBreakAt(rawVideoTime);
-        return !!adBreak;
-    }
-
-    getAdBreakAt(videoTime) {
-        if (videoTime === undefined) videoTime = this.currVideoTime;
-        for (var index in this.adBreaks) {
-            const adBreak = this.adBreaks[index];
-            if (Math.abs(adBreak.startTime - videoTime) < 0.1) {
-                return adBreak;
-            }
-        }
-        return undefined;
     }
 
     getVideoDuration() {
@@ -674,9 +628,9 @@ export class VideoController {
 
     timeDebugDisplay(videoTime) {
         var result = timeLabel(videoTime);
-        const adBreak = this.getAdBreakAt(videoTime);
-        if (adBreak) {
-            result += ' (adBreak ' + adBreak.index + ')';
+        const ad = this.currentAd;
+        if (ad) {
+            result += ' (adBreak ' + ad.getPodInfo().getPodIndex() + ')';
         }
         return result;
     }
@@ -703,9 +657,11 @@ export class VideoController {
             this.pauseButton.classList.add('show');
         }
 
-        const durationToDisplay = this.currentAd ? this.currentAd.getDuration() : this.getVideoDuration();
-        const currTime = this.currentAd ? durationToDisplay - this.adsManager.getRemainingTime()
-            : this.currVideoTime;
+        const adProgress = this.currentAdProgress;
+        const durationToDisplay = adProgress ? adProgress.duration
+            : this.currentAd ? this.currentAd.getDuration()
+            : this.getVideoDuration();
+        const currTime = adProgress ? adProgress.currentTime : this.currentAd ? 0 : this.currVideoTime;
 
         function percentage(time) {
             const result = durationToDisplay > 0 ? (time / durationToDisplay) * 100 : 0;
@@ -713,16 +669,15 @@ export class VideoController {
         }
 
         const seekTarget = this.seekTarget;
-        let currTimeToDisplay = currTime;
-        let timeToDisplay = currTimeToDisplay;
+        let timeToDisplay = currTime;
         if (seekTarget >= 0 && !this.currentAd) {
             timeToDisplay = seekTarget;
-            const seekTargetDiff = Math.abs(currTimeToDisplay - timeToDisplay);
+            const seekTargetDiff = Math.abs(currTime - timeToDisplay);
             this.seekBar.style.width = percentage(seekTargetDiff);
-            if (currTimeToDisplay <= timeToDisplay) {
-                this.seekBar.style.left = percentage(currTimeToDisplay);
+            if (currTime <= timeToDisplay) {
+                this.seekBar.style.left = percentage(currTime);
             } else {
-                this.seekBar.style.left = percentage(currTimeToDisplay - seekTargetDiff);
+                this.seekBar.style.left = percentage(currTime - seekTargetDiff);
             }
             this.seekBar.classList.add('show');
 
