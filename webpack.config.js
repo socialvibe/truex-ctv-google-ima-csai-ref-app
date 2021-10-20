@@ -51,6 +51,11 @@ module.exports = function(env) {
                     use: 'svg-inline-loader',
                 },
                 {
+                    test: /\.xml$/i,
+                    exclude: /node_modules/,
+                    use: 'raw-loader',
+                },
+                {
                     test: /\.js$/,
                     use: 'babel-loader',
                     include: [
