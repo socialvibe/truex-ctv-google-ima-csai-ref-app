@@ -68,12 +68,12 @@ module.exports = function(env) {
         plugins: [
             new HtmlWebpackPlugin({
                 filename: 'index.html',
-                template: './src/simple/index.html',
+                template: './src/index.html',
                 chunks: ['simple'],
             }),
             new HtmlWebpackPlugin({
                 filename: 'integrated.html',
-                template: './src/integrated/integrated.html',
+                template: './src/index.html',
                 chunks: ['integrated'],
             })
         ],

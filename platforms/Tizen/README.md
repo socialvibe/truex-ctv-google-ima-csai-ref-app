@@ -25,7 +25,7 @@
 This reference app shows how to access the TIFA and pass it along to the true[X] interactive ad.
 Search for 'platform.isTizen' in the [interactive-ad.js](../../src/components/interactive-ad.js) file to see how that is accessed.
 
-Note also this script entry in [index.html](../../src/simple/index.html) to access the Tizen webapi:
+Note also this script entry in [index.html](src/index.html) to access the Tizen webapi:
 ```html
   <!-- webapi for Tizen: -->
   <script src="$WEBAPIS/webapis/webapis.js"></script>

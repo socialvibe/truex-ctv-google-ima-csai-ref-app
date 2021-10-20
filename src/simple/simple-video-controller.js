@@ -1,16 +1,20 @@
 import { TXMPlatform } from 'truex-shared/focus_manager/txm_platform';
 
-import './video-controller.scss';
+import '../components/video-controller.scss';
 import playSvg from '../assets/play-button.svg';
 import pauseSvg from '../assets/pause-button.svg';
 
-import { AdBreak } from "./ad-break";
-import { InteractiveAd } from "./interactive-ad";
+import { AdBreak } from "../components/ad-break";
+import { InteractiveAd } from "../components/interactive-ad";
 
 const adSlotW = 1280;
 const adSlotH = 720;
 
-export class VideoController {
+/**
+ * Presents a video controller that demonstrates the "simple" use of the client-side ad insertion IMA SDK
+ * I.e. we implement the video player ourselves, the idea being that approach should be generalizable to any player.
+ */
+export class SimpleVideoController {
     constructor(videoOwner, controlBarSelector, platform) {
         this.debug = false; // set to true to enable more verbose video time logging.
 
