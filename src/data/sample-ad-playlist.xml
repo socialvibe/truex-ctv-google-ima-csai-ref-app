@@ -1,32 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<VAST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd" version="4.0">
-  <Ad id="1" sequence="1">
-    <Wrapper>
-      <AdSystem>trueX</AdSystem>
-      <VASTAdTagURI>
-        <![CDATA[https://get.truex.com/ab292e1309b91434c836511c865f6fbd89f17184/vast?network_user_id=539b855a-135a-4ee7-affa-7643cee93f2f&dimension_1=Oolong+the+Terrible+English+Uncut&dimension_2=1&dimension_4=27384&dimension_5=evergreen&stream_position=midroll]]></VASTAdTagURI>
-    </Wrapper>
-  </Ad>
-  <!-- Need <Ad> entries for:
-  https://ctv.truex.com/assets/airline-720p.mp4
-  https://ctv.truex.com/assets/coffee-720p.mp4
-  https://ctv.truex.com/assets/petcare-720p.mp4
-  -->
-  <Ad id="330593056700597688">
-    <InLine>
-      <AdSystem>AdSense/AdX</AdSystem>
-      <AdTitle>Airline</AdTitle>
-      <Creatives>
-        <Creative id="2814335735" sequence="1">
-          <Linear skipoffset="00:00:05">
-            <Duration>00:00:23</Duration>
-            <MediaFiles>
-              <MediaFile id="1" delivery="progressive" type="video/mp4" width="1280" height="720">
-                <![CDATA[https://assets.dspunion.com/cdn-adn/vh/21/05/27/15/42/f2ac9e889ab97632306cace7a494c504.mp4]]></MediaFile>
-            </MediaFiles>
-          </Linear>
-        </Creative>
-      </Creatives>
-    </InLine>
-  </Ad>
-</VAST>
+<vmap:VMAP xmlns:vmap="http://www.iab.net/videosuite/vmap" version="1.0">
+  <vmap:AdBreak timeOffset="start" breakType="linear" breakId="preroll">
+    <vmap:AdSource id="preroll-ad-1" allowMultipleAds="false" followRedirects="true">
+      <vmap:VASTAdData>
+        <VAST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd"
+            version="3.0">
+          <Ad id="709684336">
+            <InLine>
+              <AdSystem>GDFP</AdSystem>
+              <AdTitle>External NCA1C1L1 Preroll</AdTitle>
+              <Description><![CDATA[External NCA1C1L1 Preroll ad]]></Description>
+              <Creatives>
+                <Creative id="57861016576" sequence="1">
+                  <Linear>
+                    <Duration>00:00:10</Duration>
+                    <MediaFiles>
+                      <MediaFile id="GDFP" delivery="progressive" width="1280" height="720" type="video/mp4"
+                          bitrate="398" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://redirector.gvt1.com/videoplayback/id/5bad011a1282b323/itag/15/source/gfp_video_ads/requiressl/yes/acao/yes/mime/video%2Fmp4/ctier/L/ip/0.0.0.0/ipbits/0/expire/1634705676/sparams/ip,ipbits,expire,id,itag,source,requiressl,acao,mime,ctier/signature/6AC685C7FF8F16039416F736D20A0885382ABE9F.4A83C33CA44BDB26439CCFC1D50AF7ECB6CBBD71/key/ck2/file/file.mp4]]></MediaFile>
+                    </MediaFiles>
+                  </Linear>
+                </Creative>
+              </Creatives>
+            </InLine>
+          </Ad>
+        </VAST>
+      </vmap:VASTAdData>
+    </vmap:AdSource>
+  </vmap:AdBreak>
+  <vmap:AdBreak timeOffset="00:00:15.000" breakType="linear" breakId="midroll-1">
+    <vmap:AdSource id="midroll-1-ads" allowMultipleAds="true" followRedirects="true">
+      <vmap:VASTAdData>
+        <VAST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd"
+            version="3.0">
+          <Ad id="710742256" sequence="1">
+            <InLine>
+              <AdSystem>GDFP</AdSystem>
+              <AdTitle>External NCA1C1L2 Midroll</AdTitle>
+              <Description><![CDATA[External NCA1C1L2 Midroll ad]]></Description>
+              <Creatives>
+                <Creative id="57861183136" sequence="1">
+                  <Linear>
+                    <Duration>00:00:10</Duration>
+                    <MediaFiles>
+                      <MediaFile id="GDFP" delivery="progressive" width="1280" height="720" type="video/mp4"
+                          scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://redirector.gvt1.com/videoplayback/id/240e9a8fa1c2d3f6/itag/15/source/gfp_video_ads/requiressl/yes/acao/yes/mime/video%2Fmp4/ctier/L/ip/0.0.0.0/ipbits/0/expire/1634705676/sparams/ip,ipbits,expire,id,itag,source,requiressl,acao,mime,ctier/signature/683D62E6C72476D3A1F865C46763C691AB71B835.A0B5928E8B3896B572AE25B0F3775B1AE3E9F6B7/key/ck2/file/file.mp4]]></MediaFile>
+                    </MediaFiles>
+                  </Linear>
+                </Creative>
+              </Creatives>
+            </InLine>
+          </Ad>
+        </VAST>
+      </vmap:VASTAdData>
+    </vmap:AdSource>
+  </vmap:AdBreak>
+</vmap:VMAP>
