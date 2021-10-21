@@ -260,6 +260,7 @@ export class SimpleVideoController {
                     + ' pod: ' + ad.getAdPodInfo().getPodIndex());
                 this.currentAdProgress = null;
                 this.currentAdPaused = false;
+                this.ensureAdBreaks();
                 this.showLoadingSpinner(false);
                 this.hideControlBar();
 
@@ -527,15 +528,19 @@ export class SimpleVideoController {
         return this.adsManager && this.adsManager.getCurrentAd();
     }
 
+    ensureAdBreaks() {
+        if (!this.adBreaks || this.adBreaks.length <= 0) {
+            const cuePoints = this.adsManager.getCuePoints();
+            this.adBreaks = cuePoints.map((adBreakStart, index) => new AdBreak(adBreakStart, index));
+            console.log("ad breaks: " + this.adBreaks.map(adBreak => timeLabelOf(adBreak.startTime)).join(", "));
+        }
+    }
+
     getCurrentAdBreak() {
         const ad = this.getCurrentAd();
         const adPod = ad && ad.getAdPodInfo();
         if (adPod) {
-            if (!this.adBreaks || this.adBreaks.length <= 0) {
-                const cuePoints = this.adsManager.getCuePoints();
-                this.adBreaks = cuePoints.map((adBreakStart, index) => new AdBreak(adBreakStart, index));
-                console.log("ad breaks: " + this.adBreaks.map(adBreak => timeLabelOf(adBreak.startTime)).join(", "));
-            }
+            this.ensureAdBreaks();
             return this.adBreaks[adPod.getPodIndex()];
         }
     }
