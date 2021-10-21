@@ -7,8 +7,8 @@ import pauseSvg from '../assets/pause-button.svg';
 import { AdBreak } from "../components/ad-break";
 import { InteractiveAd } from "../components/interactive-ad";
 
-// import vastPlaylist from '../data/sample-ad-playlist.xml';
-import vastPlaylist from '../data/test-vast.xml';
+import vastPlaylist from '../data/sample-ad-playlist.xml';
+import googleVastSample from '../data/google-vast-sample.xml';
 
 /**
  * Presents a video controller that demonstrates the "simple" use of the client-side ad insertion IMA SDK
@@ -161,13 +161,11 @@ export class SimpleVideoController {
 
             // Normal scenario is to request a VAST VMAP ad playlist via a url.
             // For this demo application, we will use a canned xml response.
-          // adsRequest.adTagUrl = 'https://pubads.g.doubleclick.net/gampad/ads?' +
-          //     'sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&' +
-          //     'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&' +
-          //     'cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=';
-            // var xmlParser = new DOMParser();
-            // var vastXml = xmlParser.parseFromString(vastPlaylist, "text/xml");
-            adsRequest.adsResponse = vastPlaylist;
+//          adsRequest.adTagUrl = 'https://pubads.g.doubleclick.net/gampad/ads?' +
+//              'sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&' +
+//              'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&' +
+//              'cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=';
+            adsRequest.adsResponse = googleVastSample;
 
                 // Specify the linear and nonlinear slot sizes. This helps the SDK to
             // select the correct creative if multiple are returned.
