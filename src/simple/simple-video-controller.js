@@ -259,7 +259,6 @@ export class SimpleVideoController {
                 this.currentAdProgress = null;
                 this.currentAdPaused = false;
                 this.ensureAdBreaks();
-                this.showLoadingSpinner(false);
                 this.hideControlBar();
 
                 this.startInteractiveAd(ad);
