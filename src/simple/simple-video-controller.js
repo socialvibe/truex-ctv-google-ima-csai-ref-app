@@ -256,7 +256,8 @@ export class SimpleVideoController {
         const ad = event.getAd();
         switch (event.type) {
             case google.ima.AdEvent.Type.LOADED:
-                console.log("ad loaded: " + ad.getAdId() + ' duration: ' + ad.getDuration() + ' pod: ' + pod.getPodIndex());
+                console.log("ad loaded: " + ad.getAdId() + ' duration: ' + ad.getDuration()
+                    + ' pod: ' + ad.getAdPodInfo().getPodIndex());
                 this.currentAdProgress = null;
                 this.currentAdPaused = false;
                 this.showLoadingSpinner(false);
@@ -309,7 +310,7 @@ export class SimpleVideoController {
         if (!this.video) return;
         if (!this.adDisplayContainer) return;
         if (!this.adsManager) return;
-        console.log('video playing at: ' + this.timeDebugDisplay(this.initialVideoTime));
+        console.log('video playing at: ' + timeLabelOf(this.initialVideoTime));
         this.videoStarted = false; // set to true on the first playing event
         this.currVideoTime = this.initialVideoTime; // will be updated as video progresses
 
@@ -378,7 +379,7 @@ export class SimpleVideoController {
 
         if (!this.video) return;
         if (this.playPromise) return; // don't interrupt current play invocations
-        if (this.debug) console.log(`play from: ${this.timeDebugDisplay(this.currVideoTime)}`);
+        if (this.debug) console.log(`play from: ${timeLabelOf(this.currVideoTime)}`);
         // Work around PS4 hangs by starting playback in a separate thread.
         setTimeout(() => {
             if (!this.video) return; // video has been closed
@@ -401,7 +402,7 @@ export class SimpleVideoController {
 
         if (!this.video) return;
         if (this.playPromise) return; // don't interrupt current play invocations
-        if (this.debug) console.log(`paused at: ${this.timeDebugDisplay(this.currVideoTime)}`);
+        if (this.debug) console.log(`paused at: ${timeLabelOf(this.currVideoTime)}`);
         this.video.pause();
     }
 
@@ -490,7 +491,7 @@ export class SimpleVideoController {
 
         this.seekTarget = Math.max(0, Math.min(newTarget, maxTarget));
 
-        console.log(`seek to: ${this.timeDebugDisplay(this.seekTarget)}`);
+        console.log(`seek to: ${timeLabelOf(this.seekTarget)}`);
 
         if (video) {
             video.currentTime = this.seekTarget;
@@ -509,7 +510,7 @@ export class SimpleVideoController {
         const adBreak = this.getCurrentAdBreak();
         if (adBreak) {
             adBreak.completed = true;
-            console.log(`ad break ${adBreak.index} skipped at: ${this.timeDebugDisplay(adBreak.startTime)}`);
+            console.log(`ad break ${adBreak.index} skipped at: ${timeLabelOf(adBreak.startTime)}`);
             this.adsManager.discardAdBreak();
         }
         this.hideControlBar();
@@ -533,7 +534,7 @@ export class SimpleVideoController {
             if (!this.adBreaks || this.adBreaks.length <= 0) {
                 const cuePoints = this.adsManager.getCuePoints();
                 this.adBreaks = cuePoints.map((adBreakStart, index) => new AdBreak(adBreakStart, index));
-                console.log("ad breaks: " + this.adBreaks.map(adBreak => timeLabel(adBreak.startTime)).join(", "));
+                console.log("ad breaks: " + this.adBreaks.map(adBreak => timeLabelOf(adBreak.startTime)).join(", "));
             }
             return this.adBreaks[adPod.getPodIndex()];
         }
@@ -563,7 +564,7 @@ export class SimpleVideoController {
             vastConfigUrl = 'https://' + vastConfigUrl;
         }
         adBreak.started = true;
-        console.log(`truex ad started at ${this.timeDebugDisplay(adBreak.startTime)}:\n${vastConfigUrl}`);
+        console.log(`truex ad started at ${timeLabelOf(adBreak.startTime)}:\n${vastConfigUrl}`);
 
         // Start an interactive ad.
         this.hideControlBar();
@@ -583,7 +584,7 @@ export class SimpleVideoController {
         if (this.videoStarted) return;
         this.videoStarted = true;
 
-        console.log('video playback started: ' + this.timeDebugDisplay(this.initialVideoTime));
+        console.log('video playback started: ' + timeLabelOf(this.initialVideoTime));
 
         if (!this.platform.supportsInitialVideoSeek && this.initialVideoTime > 0) {
             // The initial seek is not supported, e.g. on the PS4. Do it now.
@@ -605,7 +606,7 @@ export class SimpleVideoController {
         if (!this.videoStarted) return;
 
         const newTime = this.video.currentTime;
-        if (this.debug) console.log('video time: ' + this.timeDebugDisplay(newTime));
+        if (this.debug) console.log('video time: ' + timeLabelOf(newTime));
 
         const currTime = this.currVideoTime;
         if (newTime == currTime) return;
@@ -623,7 +624,7 @@ export class SimpleVideoController {
     }
 
     timeDebugDisplay(videoTime) {
-        var result = timeLabel(videoTime);
+        var result = timeLabelOf(videoTime);
         const ad = this.getCurrentAd();
         if (ad) {
             result += ' (adBreak ' + ad.getAdPodInfo().getPodIndex() + ')';
@@ -683,9 +684,9 @@ export class SimpleVideoController {
         }
 
         this.progressBar.style.width = percentage(timeToDisplay);
-        this.durationLabel.innerText = timeLabel(durationToDisplay);
+        this.durationLabel.innerText = timeLabelOf(durationToDisplay);
 
-        this.timeLabel.innerText = timeLabel(timeToDisplay);
+        this.timeLabel.innerText = timeLabelOf(timeToDisplay);
         this.timeLabel.style.left = percentage(timeToDisplay);
 
         if (ad) {
@@ -705,7 +706,7 @@ export class SimpleVideoController {
     }
 }
 
-function timeLabel(time) {
+function timeLabelOf(time) {
     time = Math.round(time);
     const seconds = time % 60;
     time /= 60;
