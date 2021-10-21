@@ -7,8 +7,8 @@ import pauseSvg from '../assets/pause-button.svg';
 import { AdBreak } from "../components/ad-break";
 import { InteractiveAd } from "../components/interactive-ad";
 
-const adSlotW = 1280;
-const adSlotH = 720;
+// import vastPlaylist from '../data/sample-ad-playlist.xml';
+import vastPlaylist from '../data/test-vast.xml';
 
 /**
  * Presents a video controller that demonstrates the "simple" use of the client-side ad insertion IMA SDK
@@ -28,8 +28,8 @@ export class SimpleVideoController {
         this.adsManager = null;
         this.adDisplayContainer = null;
         this.adsLoader = null;
-        this.currentAd = null;
         this.currentAdProgress = null;
+        this.currentAdPaused = false;
 
         this.controlBarDiv = document.querySelector(controlBarSelector);
         this.isControlBarVisible = false;
@@ -137,8 +137,10 @@ export class SimpleVideoController {
         video.addEventListener('playing', this.onVideoStarted);
         video.addEventListener("timeupdate", this.onVideoTimeUpdate);
 
-        // We are showing our own Ad UI, so just pass in a disconnected place holder to keep the manager happy.
+        // Put in the placeholder for the ad UI.
         const adUI = document.createElement('div');
+        adUI.classList.add('adUI');
+        this.videoOwner.insertBefore(adUI, overlay);
 
         this.adDisplayContainer = new google.ima.AdDisplayContainer(adUI, video);
         this.adsLoader = new google.ima.AdsLoader(this.adDisplayContainer);
@@ -159,18 +161,21 @@ export class SimpleVideoController {
 
             // Normal scenario is to request a VAST VMAP ad playlist via a url.
             // For this demo application, we will use a canned xml response.
-//            adsRequest.adTagUrl = 'https://pubads.g.doubleclick.net/gampad/ads?' +
-//                'sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&' +
-//                'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&' +
-//                'cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=';
-            adsRequest.adResponse = require('../data/sample-ad-playlist.xml');
+           adsRequest.adTagUrl = 'https://pubads.g.doubleclick.net/gampad/ads?' +
+               'sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&' +
+               'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&' +
+               'cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=';
+//             var xmlParser = new DOMParser();
+//             var vastXml = xmlParser.parseFromString(vastPlaylist, "text/xml");
+//             adsRequest.adResponse = vastPlaylist;
 
-            // Specify the linear and nonlinear slot sizes. This helps the SDK to
+                // Specify the linear and nonlinear slot sizes. This helps the SDK to
             // select the correct creative if multiple are returned.
-            adsRequest.linearAdSlotWidth = adSlotW;
-            adsRequest.linearAdSlotHeight = adSlotH;
-            adsRequest.nonLinearAdSlotWidth = adSlotW;
-            adsRequest.nonLinearAdSlotHeight = adSlotH;
+            const adSize = this.getAdSize();
+            adsRequest.linearAdSlotWidth = adSize.width;
+            adsRequest.linearAdSlotHeight = adSize.height;
+            adsRequest.nonLinearAdSlotWidth = adSize.width;
+            adsRequest.nonLinearAdSlotHeight = adSize.height;
 
             this.adsLoader.requestAds(adsRequest);
         } else {
@@ -222,13 +227,9 @@ export class SimpleVideoController {
 
         // Add listeners to the required events.
         this.adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, this.onAdError);
-        this.adsManager.addEventListener(
-            google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, onContentPauseRequested);
-        this.adsManager.addEventListener(
-            google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
-            onContentResumeRequested);
-        this.adsManager.addEventListener(
-            google.ima.AdEvent.Type.ALL_ADS_COMPLETED, onAdEvent);
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, this.onContentPauseRequested);
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, this.onContentResumeRequested);
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, this.onAdEvent);
 
         // Listen to any additional events, if necessary.
         this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, this.onAdEvent);
@@ -244,9 +245,7 @@ export class SimpleVideoController {
             this.adMarkersDiv.removeChild(childNodes[i]);
         }
 
-        const cuePoints = this.adsManager.getCuePoints();
-        this.adBreaks = cuePoints.map((adBreakStart, index) => new AdBreak(adBreakStart, index));
-        console.log("ad breaks: " + this.adBreaks.map(adBreak => timeLabel(adBreak.startTime)).join(", "));
+        this.playVideo();
 
         this.refresh();
     }
@@ -254,55 +253,63 @@ export class SimpleVideoController {
     onAdEvent(event) {
         // Retrieve the ad from the event. Some events (e.g. ALL_ADS_COMPLETED)
         // don't have ad object associated.
-        var ad = event.getAd();
+        const ad = event.getAd();
         switch (event.type) {
             case google.ima.AdEvent.Type.LOADED:
-                this.startAd(ad);
+                console.log("ad loaded: " + ad.getAdId() + ' duration: ' + ad.getDuration() + ' pod: ' + pod.getPodIndex());
+                this.currentAdProgress = null;
+                this.currentAdPaused = false;
+                this.showLoadingSpinner(false);
+                this.hideControlBar();
+
+                this.startInteractiveAd(ad);
                 break;
 
             case google.ima.AdEvent.Type.STARTED:
+                this.showLoadingSpinner(false);
+                this.hideControlBar();
                 this.refresh();
                 break;
 
             case google.ima.AdEvent.Type.AD_PROGRESS:
-                this.currentAdProgress = ad.getAdData();
+                this.currentAdProgress = event.getAdData();
                 this.refresh();
                 break;
 
             case google.ima.AdEvent.Type.COMPLETE:
-                this.currentAd = null;
+                console.log("ad complete: " + ad.getAdId());
+            case google.ima.AdEvent.Type.ALL_ADS_COMPLETED:
+                this.currentAdProgress = null;
                 this.refresh();
                 break;
         }
     }
 
     onAdError(event) {
-        console.log(event.getError());
+        const err = event.getError();
+        console.error("ad error: " + (err && err.getMessage() || "unknown error"));
         if (this.adsManager) {
             this.adsManager.destroy();
+            this.adsManager = null;
+            this.playVideo();
         }
     }
 
     onContentPauseRequested() {
         this.video.pause();
-        // This function is where you should setup UI for showing ads (e.g.
-        // display ad timer countdown, disable seeking etc.)
-        // setupUIForAds();
+        this.refresh();
     }
 
     onContentResumeRequested() {
         this.video.play();
-        // This function is where you should ensure that your UI is ready
-        // to play content. It is the responsibility of the Publisher to
-        // implement this function when necessary.
-        // setupUIForContent();
+        this.refresh();
     }
 
     playVideo() {
         if (!this.video) return;
         if (!this.adDisplayContainer) return;
         if (!this.adsManager) return;
-        console.log('video played at: ' + this.timeDebugDisplay(this.initialVideoTime));
+        console.log('video playing at: ' + this.timeDebugDisplay(this.initialVideoTime));
         this.videoStarted = false; // set to true on the first playing event
         this.currVideoTime = this.initialVideoTime; // will be updated as video progresses
 
@@ -312,7 +319,8 @@ export class SimpleVideoController {
 
         try {
             // Initialize the ads manager. Ad rules playlist will start at this time.
-            this.adsManager.init(adSlotW, adSlotH, google.ima.ViewMode.NORMAL);
+            const adSize = this.getAdSize();
+            this.adsManager.init(adSize.width,adSize.height, google.ima.ViewMode.NORMAL);
 
             // Call play to start showing the ad. Single video and overlay ads will
             // start at this time; the call will be ignored for ad rules.
@@ -320,6 +328,7 @@ export class SimpleVideoController {
 
         } catch (adError) {
             // An error may be thrown if there was a problem with the VAST response.
+            console.error("ads manager start error: " + adError);
             this.video.play();
         }
     }
@@ -350,11 +359,23 @@ export class SimpleVideoController {
     }
 
     isPaused() {
+        const ad = this.getCurrentAd();
+        if (ad) {
+            return this.currentAdPaused;
+        }
+
         if (this.playPromise) return false; // consider the video has not paused if playback is pending
         return !this.video || this.video.paused;
     }
 
     play() {
+        const ad = this.getCurrentAd();
+        if (ad) {
+            this.currentAdPaused = false;
+            this.adsManager.resume();
+            return;
+        }
+
         if (!this.video) return;
         if (this.playPromise) return; // don't interrupt current play invocations
         if (this.debug) console.log(`play from: ${this.timeDebugDisplay(this.currVideoTime)}`);
@@ -371,6 +392,13 @@ export class SimpleVideoController {
     }
 
     pause() {
+        const ad = this.getCurrentAd();
+        if (ad) {
+            this.currentAdPaused = true;
+            this.adsManager.pause();
+            return;
+        }
+
         if (!this.video) return;
         if (this.playPromise) return; // don't interrupt current play invocations
         if (this.debug) console.log(`paused at: ${this.timeDebugDisplay(this.currVideoTime)}`);
@@ -386,7 +414,8 @@ export class SimpleVideoController {
     }
 
     stepVideo(forward) {
-        if (this.currentAd) {
+        const ad = this.getCurrentAd();
+        if (ad) {
             // Don't allow user seeking during ad playback
             // Just show the control bar so the user can see the timeline.
             this.showControlBar();
@@ -476,32 +505,50 @@ export class SimpleVideoController {
         }
     }
 
-    skipAd() {
-        if (!this.currentAd) return;
-        const adBreak = this.adBreaks[this.currentAd.getPodInfo().getPodIndex()];
+    skipAdBreak() {
+        const adBreak = this.getCurrentAdBreak();
         if (adBreak) {
             adBreak.completed = true;
             console.log(`ad break ${adBreak.index} skipped at: ${this.timeDebugDisplay(adBreak.startTime)}`);
+            this.adsManager.discardAdBreak();
         }
-
         this.hideControlBar();
-
-        this.adsManager.discardAdBreak();
     }
 
-    startAd(googleAd) {
-        this.currentAd = googleAd;
+    getAdSize() {
+        return {
+          width: this.videoOwner.clientWidth,
+          height: this.videoOwner.clientHeight
+        };
+    }
+
+    getCurrentAd() {
+        return this.adsManager && this.adsManager.getCurrentAd();
+    }
+
+    getCurrentAdBreak() {
+        const ad = this.getCurrentAd();
+        const adPod = ad && ad.getAdPodInfo();
+        if (adPod) {
+            if (!this.adBreaks || this.adBreaks.length <= 0) {
+                const cuePoints = this.adsManager.getCuePoints();
+                this.adBreaks = cuePoints.map((adBreakStart, index) => new AdBreak(adBreakStart, index));
+                console.log("ad breaks: " + this.adBreaks.map(adBreak => timeLabel(adBreak.startTime)).join(", "));
+            }
+            return this.adBreaks[adPod.getPodIndex()];
+        }
+    }
+
+    startInteractiveAd(googleAd) {
         const podInfo = googleAd.getAdPodInfo();
         const adBreak = this.adBreaks[podInfo.getPodIndex()];
         if (!adBreak) return;
         if (adBreak.started) return; // ad already processed
         if (adBreak.completed) {
             // Ignore ads already completed.
-            this.skipAd(adBreak);
+            this.skipAdBreak(adBreak);
             return;
         }
-
-        adBreak.duration = this.adsManager.getRemainingTime();
 
         // For true[X] IMA integration, the first ad in an ad break points to the interactive ad,
         // everything else are the fallback ad videos, or else non-truex ad videos.
@@ -509,7 +556,7 @@ export class SimpleVideoController {
         const isInteractiveAd = googleAd.getAdSystem() == 'trueX' && podInfo.getAdPosition() == 1;
         if (!isInteractiveAd) return;
 
-        var vastConfigUrl = googleAd.getDescription();
+        var vastConfigUrl = googleAd.getDescription(); // TODO: use ad parameters
         vastConfigUrl = vastConfigUrl && vastConfigUrl.trim();
         if (!vastConfigUrl) return;
         if (!vastConfigUrl.startsWith('http')) {
@@ -525,8 +572,8 @@ export class SimpleVideoController {
 
         //this.initialVideoTime = adBreak.startTime;
 
-        const ad = new InteractiveAd(vastConfigUrl, adBreak, this);
-        setTimeout(() => ad.start(), 1); // show the ad "later" to work around hangs/crashes on the PS4
+        const interactiveAd = new InteractiveAd(vastConfigUrl, adBreak, this);
+        setTimeout(() => interactiveAd.start(), 1); // show the ad "later" to work around hangs/crashes on the PS4
 
         return true; // ad started
     }
@@ -577,17 +624,20 @@ export class SimpleVideoController {
 
     timeDebugDisplay(videoTime) {
         var result = timeLabel(videoTime);
-        const ad = this.currentAd;
+        const ad = this.getCurrentAd();
         if (ad) {
-            result += ' (adBreak ' + ad.getPodInfo().getPodIndex() + ')';
+            result += ' (adBreak ' + ad.getAdPodInfo().getPodIndex() + ')';
         }
         return result;
     }
 
     refresh() {
-        if (this.currentAd) {
+        const ad = this.getCurrentAd();
+        if (ad) {
+            // Playing an ad, show the ad indicator.
             this.adIndicator.classList.add('show');
         } else {
+            // Playing main content.
             this.adIndicator.classList.remove('show');
         }
 
@@ -607,10 +657,8 @@ export class SimpleVideoController {
         }
 
         const adProgress = this.currentAdProgress;
-        const durationToDisplay = adProgress ? adProgress.duration
-            : this.currentAd ? this.currentAd.getDuration()
-                : this.getVideoDuration();
-        const currTime = adProgress ? adProgress.currentTime : this.currentAd ? 0 : this.currVideoTime;
+        const durationToDisplay = adProgress ? adProgress.duration : ad ? ad.getDuration() : this.getVideoDuration();
+        const currTime = adProgress ? adProgress.currentTime : ad ? 0 : this.currVideoTime;
 
         function percentage(time) {
             const result = durationToDisplay > 0 ? (time / durationToDisplay) * 100 : 0;
@@ -619,7 +667,7 @@ export class SimpleVideoController {
 
         const seekTarget = this.seekTarget;
         let timeToDisplay = currTime;
-        if (seekTarget >= 0 && !this.currentAd) {
+        if (seekTarget >= 0 && !ad) {
             timeToDisplay = seekTarget;
             const seekTargetDiff = Math.abs(currTime - timeToDisplay);
             this.seekBar.style.width = percentage(seekTargetDiff);
@@ -640,7 +688,7 @@ export class SimpleVideoController {
         this.timeLabel.innerText = timeLabel(timeToDisplay);
         this.timeLabel.style.left = percentage(timeToDisplay);
 
-        if (this.currentAd) {
+        if (ad) {
             this.adMarkersDiv.classList.remove('show');
         } else {
             if (this.refreshAdMarkers && durationToDisplay > 0) {
