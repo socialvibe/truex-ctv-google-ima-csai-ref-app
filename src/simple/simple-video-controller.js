@@ -623,15 +623,6 @@ export class SimpleVideoController {
         return duration;
     }
 
-    timeDebugDisplay(videoTime) {
-        var result = timeLabelOf(videoTime);
-        const ad = this.getCurrentAd();
-        if (ad) {
-            result += ' (adBreak ' + ad.getAdPodInfo().getPodIndex() + ')';
-        }
-        return result;
-    }
-
     refresh() {
         const ad = this.getCurrentAd();
         if (ad) {
