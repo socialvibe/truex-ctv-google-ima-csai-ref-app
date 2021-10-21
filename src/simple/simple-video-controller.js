@@ -298,57 +298,6 @@ export class SimpleVideoController {
         // setupUIForContent();
     }
 
-    /**
-     * Responds to a Google IMA ad event.
-     * @param  {StreamEvent} e
-     */
-    onStreamEvent(e) {
-        const streamData = e.getStreamData();
-        const ad = e.getAd();
-        console.log('IMA stream event: ' + e.type);
-        switch (e.type) {
-            case StreamEvent.Type.CUEPOINTS_CHANGED:
-                if (this.adBreaks.length == 0) {
-                    this.adsManager.removeEventListener(StreamEvent.Type.CUEPOINTS_CHANGED, this.onAdEvent);
-                    this.setAdBreaks(streamData.cuepoints);
-                }
-                break;
-
-            case StreamEvent.Type.LOADED:
-                // this.hlsController.loadSource(streamData.url);
-                // this.hlsController.on(Hls.Events.MANIFEST_PARSED, () => this.playVideo());
-                break;
-
-            case StreamEvent.Type.ERROR:
-                break;
-
-            case StreamEvent.Type.STARTED:
-                this.startAd(ad);
-                break;
-
-            case StreamEvent.Type.AD_BREAK_STARTED:
-                // We don't strictly need to know these events since we monitor video time updates anyway.
-                // this.hideControlBar();
-                // this.adUI.style.display = 'block';
-                // this.refresh();
-                break;
-            case StreamEvent.Type.AD_BREAK_ENDED:
-                // this.adUI.style.display = 'none';
-                // this.refresh();
-                break;
-
-            case StreamEvent.Type.AD_PROGRESS:
-                // We are tracking progress via our own video time updates.
-                // const adProgress = streamData.adProgressData;
-                // const timeRemaining = Math.ceil(adProgress.duration - adProgress.currentTime);
-                // console.log('Ad Progress: dur: ' + adProgress.duration + ' remaining: ' + timeRemaining);
-                // this.refresh();
-                break;
-            default:
-                break;
-        }
-    }
-
     playVideo() {
         if (!this.video) return;
         if (!this.adDisplayContainer) return;
@@ -465,7 +414,7 @@ export class SimpleVideoController {
             for (var i in this.adBreaks) {
                 const adBreak = this.adBreaks[i];
                 if (newTarget < adBreak.startTime) break; // ignore future ads after the seek target
-                if (adBreak.endTime <= currTime) continue; // ignore past ads
+                if (adBreak.startTime < currTime) continue; // ignore past ads
 
                 if (adBreak.completed) {
                     // Skip over the completed ad.
@@ -481,7 +430,7 @@ export class SimpleVideoController {
             for (var i = this.adBreaks.length - 1; i >= 0; i--) {
                 const adBreak = this.adBreaks[i];
                 if (currTime <= adBreak.startTime) continue; // ignore unplayed future ads
-                if (adBreak.endTime < newTarget) break; // ignore ads before the seek target
+                if (adBreak.startTime < newTarget) break; // ignore ads before the seek target
 
                 if (adBreak.completed) {
                     // Skip over the completed ad.
@@ -510,11 +459,7 @@ export class SimpleVideoController {
         const duration = video && video.duration;
         const maxTarget = duration > 0 ? duration : newTarget;
 
-        // Don't allow seeking back to the preroll.
-        const firstAdBlock = this.adBreaks[0];
-        const minTarget = firstAdBlock && firstAdBlock.startTime <= 0 ? firstAdBlock.duration : 0;
-
-        this.seekTarget = Math.max(minTarget, Math.min(newTarget, maxTarget));
+        this.seekTarget = Math.max(0, Math.min(newTarget, maxTarget));
 
         console.log(`seek to: ${this.timeDebugDisplay(this.seekTarget)}`);
 
@@ -664,7 +609,7 @@ export class SimpleVideoController {
         const adProgress = this.currentAdProgress;
         const durationToDisplay = adProgress ? adProgress.duration
             : this.currentAd ? this.currentAd.getDuration()
-            : this.getVideoDuration();
+                : this.getVideoDuration();
         const currTime = adProgress ? adProgress.currentTime : this.currentAd ? 0 : this.currVideoTime;
 
         function percentage(time) {
