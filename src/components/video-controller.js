@@ -277,21 +277,18 @@ export class BaseVideoController {
                         console.log("ad breaks: " + this.adBreakTimes.map(timeLabelOf).join(', '));
                     }
                 }
-                console.log("ad loaded: " + ad.getAdId() + ' duration: ' + ad.getDuration()
-                    + ' pod: ' + ad.getAdPodInfo().getPodIndex());
-                this.currentAdProgress = null;
-                this.currentAdPaused = false;
-                this.hideControlBar();
-
-                this.startInteractiveAd();
-
                 break;
 
             case google.ima.AdEvent.Type.STARTED:
-                console.log("ad started: " + ad.getAdId());
+                console.log("ad started: " + ad.getAdId() + ' duration: ' + ad.getDuration()
+                    + ' pod: ' + ad.getAdPodInfo().getPodIndex());
+                this.currentAdProgress = null;
+                this.currentAdPaused = false;
                 this.showLoadingSpinner(false);
                 this.hideControlBar();
                 this.refresh();
+
+                this.startInteractiveAd();
                 break;
 
             case google.ima.AdEvent.Type.AD_PROGRESS:
@@ -395,6 +392,7 @@ export class BaseVideoController {
         const ad = this.getCurrentAd();
         if (ad) {
             this.currentAdPaused = false;
+            console.log("resumed ad playback");
             this.adsManager.resume();
             return;
         }
@@ -405,6 +403,7 @@ export class BaseVideoController {
         // Work around PS4 hangs by starting playback in a separate thread.
         setTimeout(() => {
             if (!this.video) return; // video has been closed
+            console.log("playing video");
             this.playPromise = this.video.play();
             if (this.playPromise) {
                 this.playPromise.then(() => {
@@ -418,6 +417,7 @@ export class BaseVideoController {
         const ad = this.getCurrentAd();
         if (ad) {
             this.currentAdPaused = true;
+            console.log("paused ad playback");
             this.adsManager.pause();
             return;
         }
@@ -425,6 +425,7 @@ export class BaseVideoController {
         if (!this.video) return;
         if (this.playPromise) return; // don't interrupt current play invocations
         if (this.debug) console.log(`paused at: ${timeLabelOf(this.currVideoTime)}`);
+        console.log("paused video");
         this.video.pause();
     }
 
@@ -528,6 +529,7 @@ export class BaseVideoController {
             if (this.isShowingTruexAd()) {
                 this.adsManager.skip();
             }
+            console.log("resumed ad playback");
             this.adsManager.resume();
         }
     }
@@ -568,8 +570,6 @@ export class BaseVideoController {
 
         // Start an interactive ad.
         this.hideControlBar();
-
-        this.adsManager.pause();
 
         const interactiveAd = new InteractiveAd(vastConfigUrl, this);
         setTimeout(() => interactiveAd.start(), 1); // show the ad "later" to work around hangs/crashes on the PS4
