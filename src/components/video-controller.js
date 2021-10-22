@@ -44,6 +44,7 @@ export class BaseVideoController {
         this.pauseButton = this.controlBarDiv.querySelector('.pause-button');
         this.pauseButton.innerHTML = pauseSvg;
 
+        this.timeline = this.controlBarDiv.querySelector('.timeline');
         this.progressBar = this.controlBarDiv.querySelector('.timeline-progress');
         this.seekBar = this.controlBarDiv.querySelector('.timeline-seek');
         this.adMarkersDiv = this.controlBarDiv.querySelector('.ad-markers');
@@ -60,6 +61,9 @@ export class BaseVideoController {
 
         this.loadingSpinner = null;
         this.playPromise = null;
+
+        this.onControlBarClick = this.onControlBarClick.bind(this);
+        this.controlBarDiv.addEventListener('click', this.onControlBarClick);
 
         this.onVideoTimeUpdate = this.onVideoTimeUpdate.bind(this);
         this.onVideoStarted = this.onVideoStarted.bind(this);
@@ -486,6 +490,32 @@ export class BaseVideoController {
 
         if (showControlBar) {
             this.showControlBar();
+        }
+    }
+
+    onControlBarClick(event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        const timelineBounds = this.timeline.getBoundingClientRect();
+        const mouseX = event.clientX;
+        if (mouseX < timelineBounds.left) {
+            // Interpret as a play/pause toggle, in case we are clicking just beside the button.
+            this.togglePlayPause();
+
+        } else {
+            // Interpret as a seek.
+            const ad = this.getCurrentAd();
+            if (ad) {
+                // Don't allow user seeking during ad playback
+                // Just show the control bar so the user can see the timeline.
+                this.showControlBar();
+                return;
+            }
+            const timelineX = Math.max(0, mouseX - timelineBounds.left);
+            const timelineRatio = timelineX / timelineBounds.width;
+            const videoDuration = this.getVideoDuration();
+            this.seekTo(videoDuration * timelineRatio);
         }
     }
 
