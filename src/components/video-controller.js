@@ -141,6 +141,12 @@ export class BaseVideoController {
         this.adUI.classList.add('adUI');
         this.videoOwner.insertBefore(this.adUI, firstOverlayChild);
 
+        this.refreshAdMarkers = true;
+        const childNodes = this.adMarkersDiv.children;
+        for (let i = childNodes.length - 1; i >= 0; i--) {
+            this.adMarkersDiv.removeChild(childNodes[i]);
+        }
+
         this.adDisplayContainer = new google.ima.AdDisplayContainer(this.adUI, video);
         this.adsLoader = new google.ima.AdsLoader(this.adDisplayContainer);
 
@@ -249,12 +255,6 @@ export class BaseVideoController {
         this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, this.onAdEvent);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, this.onAdEvent);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, this.onAdEvent);
-
-        this.refreshAdMarkers = true;
-        const childNodes = this.adMarkersDiv.children;
-        for (let i = childNodes.length - 1; i >= 0; i--) {
-            this.adMarkersDiv.removeChild(childNodes[i]);
-        }
 
         this.playVideo();
 
@@ -639,14 +639,16 @@ export class BaseVideoController {
 
         if (ad) {
             this.adMarkersDiv.classList.remove('show');
-        } else if (durationToDisplay > 0 && this.refreshAdMarkers && this.adBreakTimes) {
-            this.refreshAdMarkers = false;
-            this.adBreakTimes.forEach(startTime => {
-                const marker = document.createElement('div');
-                marker.classList.add('ad-break');
-                marker.style.left = percentage(startTime);
-                this.adMarkersDiv.appendChild(marker);
-            });
+        } else {
+            if (durationToDisplay > 0 && this.refreshAdMarkers && this.adBreakTimes) {
+                this.refreshAdMarkers = false;
+                this.adBreakTimes.forEach(startTime => {
+                    const marker = document.createElement('div');
+                    marker.classList.add('ad-break');
+                    marker.style.left = percentage(startTime);
+                    this.adMarkersDiv.appendChild(marker);
+                });
+            }
             this.adMarkersDiv.classList.add('show');
         }
     }
