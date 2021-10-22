@@ -15,9 +15,8 @@
                   <Linear>
                     <Duration>00:00:10</Duration>
                     <MediaFiles>
-                      <MediaFile id="GDFP" delivery="progressive" width="1280" height="720" type="video/mp4"
-                          bitrate="398" scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://redirector.gvt1.com/videoplayback/id/5bad011a1282b323/itag/15/source/gfp_video_ads/requiressl/yes/acao/yes/mime/video%2Fmp4/ctier/L/ip/0.0.0.0/ipbits/0/expire/1634705676/sparams/ip,ipbits,expire,id,itag,source,requiressl,acao,mime,ctier/signature/6AC685C7FF8F16039416F736D20A0885382ABE9F.4A83C33CA44BDB26439CCFC1D50AF7ECB6CBBD71/key/ck2/file/file.mp4]]></MediaFile>
+                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://redirector.gvt1.com/videoplayback/id/a33fc5b2685eb16e/itag/22/source/gfp_video_ads/requiressl/yes/acao/yes/mime/video%2Fmp4/ctier/L/ip/0.0.0.0/ipbits/0/expire/1634881573/sparams/ip,ipbits,expire,id,itag,source,requiressl,acao,mime,ctier/signature/ABA83DD646D6AAF835FECD7309DDC909BC5545FF.1355319D23B6BC689B7070B9F7CB72FF7AABD2E4/key/ck2/file/file.mp4]]></MediaFile>
                     </MediaFiles>
                   </Linear>
                 </Creative>
@@ -28,7 +27,7 @@
       </vmap:VASTAdData>
     </vmap:AdSource>
   </vmap:AdBreak>
-  <vmap:AdBreak timeOffset="00:00:15.000" breakType="linear" breakId="midroll-1">
+  <vmap:AdBreak timeOffset="00:08:05.000" breakType="linear" breakId="midroll-1">
     <vmap:AdSource id="midroll-1-ads" allowMultipleAds="true" followRedirects="true">
       <vmap:VASTAdData>
         <VAST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd"
@@ -43,9 +42,8 @@
                   <Linear>
                     <Duration>00:00:10</Duration>
                     <MediaFiles>
-                      <MediaFile id="GDFP" delivery="progressive" width="1280" height="720" type="video/mp4"
-                          scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://redirector.gvt1.com/videoplayback/id/240e9a8fa1c2d3f6/itag/15/source/gfp_video_ads/requiressl/yes/acao/yes/mime/video%2Fmp4/ctier/L/ip/0.0.0.0/ipbits/0/expire/1634705676/sparams/ip,ipbits,expire,id,itag,source,requiressl,acao,mime,ctier/signature/683D62E6C72476D3A1F865C46763C691AB71B835.A0B5928E8B3896B572AE25B0F3775B1AE3E9F6B7/key/ck2/file/file.mp4]]></MediaFile>
+                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://redirector.gvt1.com/videoplayback/id/a33fc5b2685eb16e/itag/22/source/gfp_video_ads/requiressl/yes/acao/yes/mime/video%2Fmp4/ctier/L/ip/0.0.0.0/ipbits/0/expire/1634881573/sparams/ip,ipbits,expire,id,itag,source,requiressl,acao,mime,ctier/signature/ABA83DD646D6AAF835FECD7309DDC909BC5545FF.1355319D23B6BC689B7070B9F7CB72FF7AABD2E4/key/ck2/file/file.mp4]]></MediaFile>
                     </MediaFiles>
                   </Linear>
                 </Creative>
