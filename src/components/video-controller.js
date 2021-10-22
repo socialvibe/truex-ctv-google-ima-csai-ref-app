@@ -316,11 +316,13 @@ export class BaseVideoController {
     }
 
     onContentPauseRequested() {
+        console.log("video content paused");
         this.video.pause();
         this.refresh();
     }
 
     onContentResumeRequested() {
+        console.log("video content resumed");
         this.video.play();
         this.refresh();
     }
