@@ -4,7 +4,6 @@ import '../components/video-controller.scss';
 import playSvg from '../assets/play-button.svg';
 import pauseSvg from '../assets/pause-button.svg';
 
-import { AdBreak } from "../components/ad-break";
 import { InteractiveAd } from "../components/interactive-ad";
 
 import vastAdPlaylist from '../data/sample-ad-playlist.xml';
@@ -54,7 +53,6 @@ export class SimpleVideoController {
         this.initialVideoTime = 0;
         this.currVideoTime = -1;
         this.seekTarget = undefined;
-        this.adBreaks = [];
 
         this.platform = platform || new TXMPlatform();
 
@@ -110,7 +108,6 @@ export class SimpleVideoController {
         const isFirstStart = !!videoStream;
         if (videoStream) {
             this.videoStream = videoStream;
-            this.adBreaks = []; // ensure ad breaks get reloaded
             this.initialVideoTime = 0; // ensure we start at the beginning
             console.log(`starting video: ${videoStream.title}`);
         } else {
@@ -259,13 +256,13 @@ export class SimpleVideoController {
                     + ' pod: ' + ad.getAdPodInfo().getPodIndex());
                 this.currentAdProgress = null;
                 this.currentAdPaused = false;
-                this.ensureAdBreaks();
                 this.hideControlBar();
 
                 this.startInteractiveAd(ad);
                 break;
 
             case google.ima.AdEvent.Type.STARTED:
+                console.log("ad started: " + ad.getAdId());
                 this.showLoadingSpinner(false);
                 this.hideControlBar();
                 this.refresh();
@@ -437,41 +434,6 @@ export class SimpleVideoController {
 
         let newTarget = stepFrom + seekStep;
 
-        // Skip over completed ads, but stop on uncompleted ones to force ad playback.
-        if (currTime < newTarget) {
-            // Seeking forward
-            for (var i in this.adBreaks) {
-                const adBreak = this.adBreaks[i];
-                if (newTarget < adBreak.startTime) break; // ignore future ads after the seek target
-                if (adBreak.startTime < currTime) continue; // ignore past ads
-
-                if (adBreak.completed) {
-                    // Skip over the completed ad.
-                    newTarget += adBreak.duration;
-                } else {
-                    // Play the ad instead of stepping over it.
-                    newTarget = adBreak.startTime;
-                    break;
-                }
-            }
-        } else {
-            // Seeking backwards
-            for (var i = this.adBreaks.length - 1; i >= 0; i--) {
-                const adBreak = this.adBreaks[i];
-                if (currTime <= adBreak.startTime) continue; // ignore unplayed future ads
-                if (adBreak.startTime < newTarget) break; // ignore ads before the seek target
-
-                if (adBreak.completed) {
-                    // Skip over the completed ad.
-                    newTarget -= adBreak.duration;
-                } else {
-                    // Play the ad instead of stepping over it.
-                    newTarget = adBreak.startTime;
-                    break;
-                }
-            }
-        }
-
         this.seekTo(newTarget);
     }
 
@@ -506,10 +468,9 @@ export class SimpleVideoController {
     }
 
     skipAdBreak() {
-        const adBreak = this.getCurrentAdBreak();
-        if (adBreak) {
-            adBreak.completed = true;
-            console.log(`ad break ${adBreak.index} skipped at: ${timeLabelOf(adBreak.startTime)}`);
+        const ad = this.getCurrentAd();
+        if (ad) {
+            console.log(`ad break ${ad.getAdPodInfo().getPodIndex()} skipped`);
             this.adsManager.discardAdBreak();
         }
         this.hideControlBar();
@@ -526,38 +487,13 @@ export class SimpleVideoController {
         return this.adsManager && this.adsManager.getCurrentAd();
     }
 
-    ensureAdBreaks() {
-        if (!this.adBreaks || this.adBreaks.length <= 0) {
-            const cuePoints = this.adsManager.getCuePoints();
-            this.adBreaks = cuePoints.map((adBreakStart, index) => new AdBreak(adBreakStart, index));
-            console.log("ad breaks: " + this.adBreaks.map(adBreak => timeLabelOf(adBreak.startTime)).join(", "));
-        }
-    }
-
-    getCurrentAdBreak() {
-        const ad = this.getCurrentAd();
-        const adPod = ad && ad.getAdPodInfo();
-        if (adPod) {
-            this.ensureAdBreaks();
-            return this.adBreaks[adPod.getPodIndex()];
-        }
-    }
-
     startInteractiveAd(googleAd) {
-        const podInfo = googleAd.getAdPodInfo();
-        const adBreak = this.adBreaks[podInfo.getPodIndex()];
-        if (!adBreak) return;
-        if (adBreak.started) return; // ad already processed
-        if (adBreak.completed) {
-            // Ignore ads already completed.
-            this.skipAdBreak(adBreak);
-            return;
-        }
+        const adPod = googleAd.getAdPodInfo();
 
         // For true[X] IMA integration, the first ad in an ad break points to the interactive ad,
         // everything else are the fallback ad videos, or else non-truex ad videos.
         // So anything not an interactive ad we just let play.
-        const isInteractiveAd = googleAd.getAdSystem() == 'trueX' && podInfo.getAdPosition() == 1;
+        const isInteractiveAd = googleAd.getAdSystem() == 'trueX' && adPod.getAdPosition() == 1;
         if (!isInteractiveAd) return;
 
         var vastConfigUrl = googleAd.getDescription(); // TODO: use ad parameters
@@ -566,17 +502,14 @@ export class SimpleVideoController {
         if (!vastConfigUrl.startsWith('http')) {
             vastConfigUrl = 'https://' + vastConfigUrl;
         }
-        adBreak.started = true;
-        console.log(`truex ad started at ${timeLabelOf(adBreak.startTime)}:\n${vastConfigUrl}`);
+        console.log(`truex ad started at ${timeLabelOf(adPod.getTimeOffset())}:\n${vastConfigUrl}`);
 
         // Start an interactive ad.
         this.hideControlBar();
 
         this.adsManager.pause();
 
-        //this.initialVideoTime = adBreak.startTime;
-
-        const interactiveAd = new InteractiveAd(vastConfigUrl, adBreak, this);
+        const interactiveAd = new InteractiveAd(vastConfigUrl, this.adsManager, this);
         setTimeout(() => interactiveAd.start(), 1); // show the ad "later" to work around hangs/crashes on the PS4
 
         return true; // ad started
@@ -685,16 +618,14 @@ export class SimpleVideoController {
 
         if (ad) {
             this.adMarkersDiv.classList.remove('show');
-        } else {
-            if (this.refreshAdMarkers && durationToDisplay > 0) {
-                this.refreshAdMarkers = false;
-                this.adBreaks.forEach(adBreak => {
-                    const marker = document.createElement('div');
-                    marker.classList.add('ad-break');
-                    marker.style.left = percentage(adBreak.startTime);
-                    this.adMarkersDiv.appendChild(marker);
-                });
-            }
+        } else if (durationToDisplay > 0 && this.adsManager && this.refreshAdMarkers) {
+            this.refreshAdMarkers = false;
+            this.adsManager.getCuePoints().forEach(adBreakStartTime => {
+                const marker = document.createElement('div');
+                marker.classList.add('ad-break');
+                marker.style.left = percentage(adBreakStartTime);
+                this.adMarkersDiv.appendChild(marker);
+            });
             this.adMarkersDiv.classList.add('show');
         }
     }
