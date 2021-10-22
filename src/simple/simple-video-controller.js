@@ -170,13 +170,13 @@ export class SimpleVideoController {
 
                 // Specify the linear and nonlinear slot sizes. This helps the SDK to
             // select the correct creative if multiple are returned.
-            const adSize = this.getAdSize();
+            const adSize = this.getPlayerSize();
             adsRequest.linearAdSlotWidth = adSize.width;
             adsRequest.linearAdSlotHeight = adSize.height;
             adsRequest.nonLinearAdSlotWidth = adSize.width;
             adsRequest.nonLinearAdSlotHeight = adSize.height;
 
-            setTimeout(() => this.adsLoader.requestAds(adsRequest), 0);
+            this.adsLoader.requestAds(adsRequest);
         } else {
             this.playVideo();
         }
@@ -319,8 +319,8 @@ export class SimpleVideoController {
 
         try {
             // Initialize the ads manager. Ad rules playlist will start at this time.
-            const adSize = this.getAdSize();
-            this.adsManager.init(adSize.width,adSize.height, google.ima.ViewMode.NORMAL);
+            const adSize = this.getPlayerSize();
+            this.adsManager.init(adSize.width, adSize.height, google.ima.ViewMode.NORMAL);
 
             // Call play to start showing the ad. Single video and overlay ads will
             // start at this time; the call will be ignored for ad rules.
@@ -515,7 +515,7 @@ export class SimpleVideoController {
         this.hideControlBar();
     }
 
-    getAdSize() {
+    getPlayerSize() {
         return {
           width: this.videoOwner.clientWidth,
           height: this.videoOwner.clientHeight

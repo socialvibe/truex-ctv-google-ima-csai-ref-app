@@ -148,10 +148,10 @@ export class InteractiveAd {
             if (adFreePod) {
                 // The user has the ad credit, skip over the ad video.
                 adBreak.completed = true;
-                videoController.skipAd(adBreak);
+                videoController.skipAdBreak(adBreak);
+            } else {
+                videoController.resumeAd();
             }
-
-            videoController.startVideoLater();
         }
     }
 }
