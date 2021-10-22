@@ -579,6 +579,10 @@ export class BaseVideoController {
 
     refresh() {
         const ad = this.getCurrentAd();
+        const adProgress = this.currentAdProgress;
+        const durationToDisplay = ad ? ad.getDuration() : this.getVideoDuration();
+        const currTime = ad ? (adProgress ? adProgress.currentTime : 0) : this.currVideoTime;
+
         if (ad) {
             // Playing an ad, show the ad indicator.
             this.adIndicator.classList.add('show');
@@ -601,10 +605,6 @@ export class BaseVideoController {
             this.playButton.classList.remove('show');
             this.pauseButton.classList.add('show');
         }
-
-        const adProgress = this.currentAdProgress;
-        const durationToDisplay = ad ? ad.getDuration() : this.getVideoDuration();
-        const currTime = ad ? (adProgress ? adProgress.currentTime : 0) : this.currVideoTime;
 
         function percentage(time) {
             const result = durationToDisplay > 0 ? (time / durationToDisplay) * 100 : 0;

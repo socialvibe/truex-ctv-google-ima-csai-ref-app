@@ -5,7 +5,7 @@
       <vmap:VASTAdData>
         <VAST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd"
             version="3.0">
-          <Ad id="truex-preroll">
+          <Ad id="truex-preroll" sequence="1">
             <InLine>
               <AdSystem>trueX</AdSystem>
               <AdTitle>TrueX Interactive Preroll</AdTitle>
@@ -16,6 +16,23 @@
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
                         <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
+                    </MediaFiles>
+                  </Linear>
+                </Creative>
+              </Creatives>
+            </InLine>
+          </Ad>
+          <Ad id="coffee-preroll" sequence="2">
+            <InLine>
+              <AdSystem>GDFP</AdSystem>
+              <AdTitle>Coffee Preroll</AdTitle>
+              <Creatives>
+                <Creative id="2" sequence="2">
+                  <Linear>
+                    <Duration>00:00:30</Duration>
+                    <MediaFiles>
+                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://ctv.truex.com/assets/coffee-720p.mp4]]></MediaFile>
                     </MediaFiles>
                   </Linear>
                 </Creative>
