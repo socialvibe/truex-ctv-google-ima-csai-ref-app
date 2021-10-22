@@ -414,6 +414,8 @@ export class BaseVideoController {
     }
 
     pause() {
+        if (this.isPaused()) return;
+
         const ad = this.getCurrentAd();
         if (ad) {
             this.currentAdPaused = true;
@@ -570,6 +572,7 @@ export class BaseVideoController {
 
         // Start an interactive ad.
         this.hideControlBar();
+        this.pause();
 
         const interactiveAd = new InteractiveAd(vastConfigUrl, this);
         setTimeout(() => interactiveAd.start(), 1); // show the ad "later" to work around hangs/crashes on the PS4
