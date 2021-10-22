@@ -571,7 +571,7 @@ export class BaseVideoController {
 
         this.adsManager.pause();
 
-        const interactiveAd = new InteractiveAd(vastConfigUrl, this.adsManager, this);
+        const interactiveAd = new InteractiveAd(vastConfigUrl, this);
         setTimeout(() => interactiveAd.start(), 1); // show the ad "later" to work around hangs/crashes on the PS4
 
         return true; // ad started

@@ -6,7 +6,7 @@ const optOutAdvertisingId = uuid.v4();
 
 // Exercises the True[X] Ad Renderer for interactive ads.
 export class InteractiveAd {
-    constructor(vastConfigUrl, adBreak, videoController) {
+    constructor(vastConfigUrl, videoController) {
         let adFreePod = false;
         let adOverlay;
         let tar;
@@ -14,8 +14,6 @@ export class InteractiveAd {
         const platform = videoController.platform;
 
         this.start = async () => {
-            adBreak.started = true;
-
             videoController.showLoadingSpinner(true);
 
             const nativeAdvertisingId = await getNativePlatformAdvertisingId();
@@ -147,8 +145,7 @@ export class InteractiveAd {
         function resumePlayback() {
             if (adFreePod) {
                 // The user has the ad credit, skip over the ad video.
-                adBreak.completed = true;
-                videoController.skipAdBreak(adBreak);
+                videoController.skipAdBreak();
             } else {
                 videoController.resumeAdPlayback();
             }
