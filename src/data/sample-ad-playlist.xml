@@ -11,7 +11,7 @@
               <AdTitle>TrueX Interactive Preroll</AdTitle>
               <Creatives>
                 <Creative id="truex-preroll" sequence="1">
-                  <Linear>
+                  <Linear skipoffset="00:00:00">
                     <Duration>00:00:30</Duration>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
@@ -54,7 +54,7 @@
               <AdTitle>TrueX Interactive Midroll</AdTitle>
               <Creatives>
                 <Creative id="truex-midroll" sequence="1">
-                  <Linear>
+                  <Linear skipoffset="00:00:00">
                     <Duration>00:00:30</Duration>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">

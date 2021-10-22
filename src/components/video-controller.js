@@ -279,7 +279,13 @@ export class BaseVideoController {
                 this.currentAdPaused = false;
                 this.hideControlBar();
 
-                this.startInteractiveAd(ad);
+                // For true[X] IMA integration, the first ad in an ad break points to the interactive ad,
+                // everything else are the fallback ad videos, or else non-truex ad videos.
+                // So anything not an interactive ad we just let play.
+                if (this.isShowingTruexAd()) {
+                    this.startInteractiveAd();
+                }
+
                 break;
 
             case google.ima.AdEvent.Type.STARTED:
@@ -508,16 +514,16 @@ export class BaseVideoController {
         return this.adsManager && this.adsManager.getCurrentAd();
     }
 
-    startInteractiveAd(googleAd) {
-        const adPod = googleAd.getAdPodInfo();
+    isShowingTruexAd() {
+        const ad = this.getCurrentAd();
+        return ad && ad.getAdSystem() == 'trueX' && ad.getAdPodInfo().getAdPosition() == 1;
+    }
 
-        // For true[X] IMA integration, the first ad in an ad break points to the interactive ad,
-        // everything else are the fallback ad videos, or else non-truex ad videos.
-        // So anything not an interactive ad we just let play.
-        const isInteractiveAd = googleAd.getAdSystem() == 'trueX' && adPod.getAdPosition() == 1;
-        if (!isInteractiveAd) return;
+    startInteractiveAd() {
+        const ad = this.getCurrentAd();
+        const adPod = ad.getAdPodInfo();
 
-        var vastConfigUrl = googleAd.getDescription(); // TODO: use ad parameters
+        var vastConfigUrl = ad.getDescription(); // TODO: use ad parameters
         vastConfigUrl = vastConfigUrl && vastConfigUrl.trim();
         if (!vastConfigUrl) return;
         if (!vastConfigUrl.startsWith('http')) {
