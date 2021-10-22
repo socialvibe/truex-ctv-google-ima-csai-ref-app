@@ -267,11 +267,14 @@ export class BaseVideoController {
         const ad = event.getAd();
         switch (event.type) {
             case google.ima.AdEvent.Type.LOADED:
-                console.log("ad loaded: " + ad.getAdId() + ' duration: ' + ad.getDuration()
-                    + ' pod: ' + ad.getAdPodInfo().getPodIndex());
                 if (!this.adBreakTimes) {
                     this.adBreakTimes = this.adsManager.getCuePoints();
+                    if (this.adBreakTimes) {
+                        console.log("ad breaks: " + this.adBreakTimes.map(timeLabelOf).join(', '));
+                    }
                 }
+                console.log("ad loaded: " + ad.getAdId() + ' duration: ' + ad.getDuration()
+                    + ' pod: ' + ad.getAdPodInfo().getPodIndex());
                 this.currentAdProgress = null;
                 this.currentAdPaused = false;
                 this.hideControlBar();

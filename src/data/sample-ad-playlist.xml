@@ -10,7 +10,7 @@
               <AdSystem>trueX</AdSystem>
               <AdTitle>TrueX Interactive Preroll</AdTitle>
               <Creatives>
-                <Creative id="1" sequence="1">
+                <Creative id="truex-preroll" sequence="1">
                   <Linear>
                     <Duration>00:00:30</Duration>
                     <MediaFiles>
@@ -27,7 +27,7 @@
               <AdSystem>GDFP</AdSystem>
               <AdTitle>Coffee Preroll</AdTitle>
               <Creatives>
-                <Creative id="2" sequence="2">
+                <Creative id="coffee-preroll" sequence="2">
                   <Linear>
                     <Duration>00:00:30</Duration>
                     <MediaFiles>
@@ -48,18 +48,51 @@
       <vmap:VASTAdData>
         <VAST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd"
             version="3.0">
-          <Ad id="710742256" sequence="1">
+          <Ad id="truex-midroll" sequence="1">
             <InLine>
-              <AdSystem>GDFP</AdSystem>
-              <AdTitle>External NCA1C1L2 Midroll</AdTitle>
-              <Description><![CDATA[External NCA1C1L2 Midroll ad]]></Description>
+              <AdSystem>trueX</AdSystem>
+              <AdTitle>TrueX Interactive Midroll</AdTitle>
               <Creatives>
-                <Creative id="57861183136" sequence="1">
+                <Creative id="truex-midroll" sequence="1">
                   <Linear>
-                    <Duration>00:00:10</Duration>
+                    <Duration>00:00:30</Duration>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://redirector.gvt1.com/videoplayback/id/a33fc5b2685eb16e/itag/22/source/gfp_video_ads/requiressl/yes/acao/yes/mime/video%2Fmp4/ctier/L/ip/0.0.0.0/ipbits/0/expire/1634881573/sparams/ip,ipbits,expire,id,itag,source,requiressl,acao,mime,ctier/signature/ABA83DD646D6AAF835FECD7309DDC909BC5545FF.1355319D23B6BC689B7070B9F7CB72FF7AABD2E4/key/ck2/file/file.mp4]]></MediaFile>
+                        <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
+                    </MediaFiles>
+                  </Linear>
+                </Creative>
+              </Creatives>
+            </InLine>
+          </Ad>
+          <Ad id="airline-midroll" sequence="2">
+            <InLine>
+              <AdSystem>GDFP</AdSystem>
+              <AdTitle>Airline Midroll</AdTitle>
+              <Creatives>
+                <Creative id="airline-midroll" sequence="2">
+                  <Linear>
+                    <Duration>00:00:30</Duration>
+                    <MediaFiles>
+                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://ctv.truex.com/assets/airline-720p.mp4]]></MediaFile>
+                    </MediaFiles>
+                  </Linear>
+                </Creative>
+              </Creatives>
+            </InLine>
+          </Ad>
+          <Ad id="pets-midroll" sequence="3">
+            <InLine>
+              <AdSystem>GDFP</AdSystem>
+              <AdTitle>Pets Midroll</AdTitle>
+              <Creatives>
+                <Creative id="pets-midroll" sequence="3">
+                  <Linear>
+                    <Duration>00:00:30</Duration>
+                    <MediaFiles>
+                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://ctv.truex.com/assets/petcare-720p.mp4]]></MediaFile>
                     </MediaFiles>
                   </Linear>
                 </Creative>
