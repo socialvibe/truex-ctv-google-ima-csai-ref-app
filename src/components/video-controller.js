@@ -70,6 +70,8 @@ export class BaseVideoController {
         this.onAdsManagerLoaded = this.onAdsManagerLoaded.bind(this);
         this.onAdEvent = this.onAdEvent.bind(this);
         this.onAdError = this.onAdError.bind(this);
+        this.onContentPauseRequested = this.onContentPauseRequested.bind(this);
+        this.onContentResumeRequested = this.onContentResumeRequested.bind(this);
 
         this.closeVideoAction = function() {}; // override as needed
     }
@@ -246,8 +248,8 @@ export class BaseVideoController {
 
         // Add listeners to the required events.
         this.adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, this.onAdError);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => this.video.pause());
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => this.video.play());
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, this.onContentPauseRequested);
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, this.onContentResumeRequested);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, this.onAdEvent);
 
         // Listen to any additional events, if necessary.
@@ -311,6 +313,16 @@ export class BaseVideoController {
             this.adsManager = null;
             this.playVideo();
         }
+    }
+
+    onContentPauseRequested() {
+        this.video.pause();
+        this.refresh();
+    }
+
+    onContentResumeRequested() {
+        this.video.play();
+        this.refresh();
     }
 
     playVideo() {
