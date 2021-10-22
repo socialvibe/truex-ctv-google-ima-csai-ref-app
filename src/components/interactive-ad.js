@@ -150,7 +150,7 @@ export class InteractiveAd {
                 adBreak.completed = true;
                 videoController.skipAdBreak(adBreak);
             } else {
-                videoController.resumeAd();
+                videoController.resumeAdPlayback();
             }
         }
     }

@@ -279,12 +279,7 @@ export class BaseVideoController {
                 this.currentAdPaused = false;
                 this.hideControlBar();
 
-                // For true[X] IMA integration, the first ad in an ad break points to the interactive ad,
-                // everything else are the fallback ad videos, or else non-truex ad videos.
-                // So anything not an interactive ad we just let play.
-                if (this.isShowingTruexAd()) {
-                    this.startInteractiveAd();
-                }
+                this.startInteractiveAd();
 
                 break;
 
@@ -503,6 +498,15 @@ export class BaseVideoController {
         this.hideControlBar();
     }
 
+    resumeAdPlayback() {
+        if (this.adsManager) {
+            if (this.isShowingTruexAd()) {
+                this.adsManager.skip();
+            }
+            this.adsManager.resume();
+        }
+    }
+
     getPlayerSize() {
         return {
           width: this.videoOwner.clientWidth,
@@ -520,10 +524,16 @@ export class BaseVideoController {
     }
 
     startInteractiveAd() {
+        // For true[X] IMA integration, the first ad in an ad break points to the interactive ad,
+        // everything else are the fallback ad videos, or else non-truex ad videos.
+        // So anything not an interactive ad we just let play.
+        if (!this.isShowingTruexAd()) return;
+
         const ad = this.getCurrentAd();
         const adPod = ad.getAdPodInfo();
 
-        var vastConfigUrl = ad.getDescription(); // TODO: use ad parameters
+        var adParams = JSON.parse(ad.getTraffickingParametersString());
+        var vastConfigUrl = adParams && adParams.vast_config_url;
         vastConfigUrl = vastConfigUrl && vastConfigUrl.trim();
         if (!vastConfigUrl) return;
         if (!vastConfigUrl.startsWith('http')) {
