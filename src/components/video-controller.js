@@ -506,12 +506,7 @@ export class BaseVideoController {
         } else {
             // Interpret as a seek.
             const ad = this.getCurrentAd();
-            if (ad) {
-                // Don't allow user seeking during ad playback
-                // Just show the control bar so the user can see the timeline.
-                this.showControlBar();
-                return;
-            }
+            if (ad) return;  // Don't allow user seeking during ad playback
             const timelineX = Math.max(0, mouseX - timelineBounds.left);
             const timelineRatio = timelineX / timelineBounds.width;
             const videoDuration = this.getVideoDuration();
