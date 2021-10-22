@@ -532,7 +532,7 @@ export class BaseVideoController {
         const ad = this.getCurrentAd();
         const adPod = ad.getAdPodInfo();
 
-        var adParams = JSON.parse(ad.getTraffickingParametersString());
+        const adParams = JSON.parse(ad.getTraffickingParametersString());
         var vastConfigUrl = adParams && adParams.vast_config_url;
         vastConfigUrl = vastConfigUrl && vastConfigUrl.trim();
         if (!vastConfigUrl) return;
