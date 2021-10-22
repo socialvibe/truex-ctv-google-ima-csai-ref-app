@@ -25,6 +25,7 @@ export class BaseVideoController {
         this.videoStream = null;
         this.adBreakTimes = null;
 
+        this.adUI = null;
         this.adsManager = null;
         this.adDisplayContainer = null;
         this.adsLoader = null;
@@ -125,8 +126,8 @@ export class BaseVideoController {
         this.video.src = videoStream.url;
 
         // Put the video underneath any control overlays.
-        const overlay = this.videoOwner.firstChild;
-        this.videoOwner.insertBefore(this.video, overlay);
+        const firstOverlayChild = this.videoOwner.firstChild;
+        this.videoOwner.insertBefore(this.video, firstOverlayChild);
 
         if (this.platform.isAndroidTV) {
             video.poster = 'noposter'; // work around grey play icon on Android TV.
@@ -136,11 +137,11 @@ export class BaseVideoController {
         video.addEventListener("timeupdate", this.onVideoTimeUpdate);
 
         // Put in the placeholder for the ad UI.
-        const adUI = document.createElement('div');
-        adUI.classList.add('adUI');
-        this.videoOwner.insertBefore(adUI, overlay);
+        this.adUI = document.createElement('div');
+        this.adUI.classList.add('adUI');
+        this.videoOwner.insertBefore(this.adUI, firstOverlayChild);
 
-        this.adDisplayContainer = new google.ima.AdDisplayContainer(adUI, video);
+        this.adDisplayContainer = new google.ima.AdDisplayContainer(this.adUI, video);
         this.adsLoader = new google.ima.AdsLoader(this.adDisplayContainer);
 
         // Listen and respond to ads loaded and error events.
@@ -208,14 +209,25 @@ export class BaseVideoController {
         video.src = ''; // ensure actual video is unloaded (needed for PS4).
 
         this.videoOwner.removeChild(video); // remove from the DOM
-
-        this.adsManager.reset();
+        this.videoOwner.removeChild(this.adUI);
 
         this.video = null;
+        this.adUI = null;
         this.adBreakTimes = null;
-        this.adsLoader = null;
-        this.adsManager = null;
         this.seekTarget = undefined;
+
+        if (this.adsManager) {
+            this.adsManager.destroy();
+            this.adsManager = null;
+        }
+        if (this.adsLoader) {
+            this.adsLoader.destroy();
+            this.adsLoader = null;
+        }
+        if (this.adDisplayContainer) {
+            this.adDisplayContainer.destroy();
+            this.adDisplayContainer = null;
+        }
     }
 
     onAdsManagerLoaded(event) {
