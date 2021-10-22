@@ -23,6 +23,7 @@ export class SimpleVideoController {
         }
         this.video = null;
         this.videoStream = null;
+        this.adBreakTimes = null;
 
         this.adsManager = null;
         this.adDisplayContainer = null;
@@ -211,6 +212,8 @@ export class SimpleVideoController {
         this.adsManager.reset();
 
         this.video = null;
+        this.adBreakTimes = null;
+        this.adsLoader = null;
         this.adsManager = null;
         this.seekTarget = undefined;
     }
@@ -254,6 +257,9 @@ export class SimpleVideoController {
             case google.ima.AdEvent.Type.LOADED:
                 console.log("ad loaded: " + ad.getAdId() + ' duration: ' + ad.getDuration()
                     + ' pod: ' + ad.getAdPodInfo().getPodIndex());
+                if (!this.adBreakTimes) {
+                    this.adBreakTimes = this.adsManager.getCuePoints();
+                }
                 this.currentAdProgress = null;
                 this.currentAdPaused = false;
                 this.hideControlBar();
@@ -585,8 +591,8 @@ export class SimpleVideoController {
         }
 
         const adProgress = this.currentAdProgress;
-        const durationToDisplay = adProgress ? adProgress.duration : ad ? ad.getDuration() : this.getVideoDuration();
-        const currTime = adProgress ? adProgress.currentTime : ad ? 0 : this.currVideoTime;
+        const durationToDisplay = ad ? ad.getDuration() : this.getVideoDuration();
+        const currTime = ad ? (adProgress ? adProgress.currentTime : 0) : this.currVideoTime;
 
         function percentage(time) {
             const result = durationToDisplay > 0 ? (time / durationToDisplay) * 100 : 0;
@@ -618,12 +624,12 @@ export class SimpleVideoController {
 
         if (ad) {
             this.adMarkersDiv.classList.remove('show');
-        } else if (durationToDisplay > 0 && this.adsManager && this.refreshAdMarkers) {
+        } else if (durationToDisplay > 0 && this.refreshAdMarkers && this.adBreakTimes) {
             this.refreshAdMarkers = false;
-            this.adsManager.getCuePoints().forEach(adBreakStartTime => {
+            this.adBreakTimes.forEach(startTime => {
                 const marker = document.createElement('div');
                 marker.classList.add('ad-break');
-                marker.style.left = percentage(adBreakStartTime);
+                marker.style.left = percentage(startTime);
                 this.adMarkersDiv.appendChild(marker);
             });
             this.adMarkersDiv.classList.add('show');
