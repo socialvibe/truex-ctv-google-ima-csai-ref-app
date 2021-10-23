@@ -53,7 +53,7 @@ If you choose to field and process history.back() actions, custom `popstate` eve
 
 In particular, on the Fire TV, the back action key event cannot be reliably overridden, and one must process `history.back()` actions instead via the `popstate` event handler.
 
-The key problem comes about since the popstate event cannot be blocked, so app developers must instead follow a practice whereby they only field back actions that are applicable only to their own application code. Please refer to this code in `simple.js` for an such approach, noting in particular the `onBackAction`, `pushBackActionBlock` and `pushBackActionStub` methods. In particular, note how the host app recognized its own history state changes vs true[X]'s.
+The key problem comes about since the popstate event cannot be blocked, so app developers must instead follow a practice whereby they only field back actions that are applicable only to their own application code. Please refer to this code in `main.js` for an such approach, noting in particular the `onBackAction`, `pushBackActionBlock` and `pushBackActionStub` methods. In particular, note how the host app recognized its own history state changes vs true[X]'s.
  ```
  window.addEventListener("popstate", onBackAction);
 
