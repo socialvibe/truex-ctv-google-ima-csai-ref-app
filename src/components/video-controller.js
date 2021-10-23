@@ -64,8 +64,8 @@ export class BaseVideoController {
 
         // The IMA SDK captures mouse clicks and keyboard focus. We intercept mouse events when ads are not playing
         // to ensure we still have full control.
-        this.mouseCapture = this.videoOwner.querySelector('.mouse-capture');
         this.onMouseEvent = this.onMouseEvent.bind(this);
+        this.mouseCapture = this.videoOwner.querySelector('.player-mouse-capture');
         this.mouseCapture.addEventListener("click", this.onMouseEvent);
         this.mouseCapture.addEventListener("mousedown", this.onMouseEvent);
         this.mouseCapture.addEventListener("mouseup", this.onMouseEvent);
@@ -152,7 +152,7 @@ export class BaseVideoController {
 
         // Put in the placeholder for the ad UI.
         this.adUI = document.createElement('div');
-        this.adUI.classList.add('adUI');
+        this.adUI.classList.add('ad-ui');
         this.videoOwner.insertBefore(this.adUI, firstOverlayChild);
 
         this.refreshAdMarkers = true;
@@ -328,12 +328,14 @@ export class BaseVideoController {
     onContentPauseRequested() {
         console.log("video content paused");
         this.video.pause();
+        this.adUI.classList.add('show');
         this.refresh();
     }
 
     onContentResumeRequested() {
         console.log("video content resumed");
         this.video.play();
+        this.adUI.classList.remove('show');
         this.refresh();
 
         // The client-side IMA SDK can steal the keyboard focus, esp if the user is clicking on ads.
