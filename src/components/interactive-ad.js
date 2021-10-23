@@ -135,6 +135,10 @@ export class InteractiveAd {
         }
 
         function closeAdOverlay() {
+            // The client-side IMA SDK can steal the keyboard focus, esp if the user is clicking on ads.
+            // Ensure the app focus is again in place.
+            window.focus();
+
             videoController.showLoadingSpinner(false);
             if (adOverlay) {
                 if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);

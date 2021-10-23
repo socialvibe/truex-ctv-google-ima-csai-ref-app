@@ -62,6 +62,15 @@ export class BaseVideoController {
         this.loadingSpinner = null;
         this.playPromise = null;
 
+        // The IMA SDK captures mouse clicks and keyboard focus. We intercept mouse events when ads are not playing
+        // to ensure we still have full control.
+        this.mouseCapture = this.videoOwner.querySelector('.mouse-capture');
+        this.onMouseEvent = this.onMouseEvent.bind(this);
+        this.mouseCapture.addEventListener("mousedown", this.onMouseEvent);
+        this.mouseCapture.addEventListener("mouseup", this.onMouseEvent);
+        this.mouseCapture.addEventListener("mouseenter", this.onMouseEvent);
+        this.mouseCapture.addEventListener("mouseexit", this.onMouseEvent);
+
         this.onControlBarClick = this.onControlBarClick.bind(this);
         this.controlBarDiv.addEventListener('click', this.onControlBarClick);
 
@@ -325,6 +334,10 @@ export class BaseVideoController {
         console.log("video content resumed");
         this.video.play();
         this.refresh();
+
+        // The client-side IMA SDK can steal the keyboard focus, esp if the user is clicking on ads.
+        // Ensure the app focus is again in place.
+        window.focus();
     }
 
     playVideo() {
@@ -408,9 +421,9 @@ export class BaseVideoController {
             console.log("playing video");
             this.playPromise = this.video.play();
             if (this.playPromise) {
-                this.playPromise.then(() => {
-                    this.playPromise = null;
-                });
+                this.playPromise
+                    .then(() => this.playPromise = null)
+                    .catch(() => this.playPromise = null);
             }
         }, 10);
     }
@@ -496,6 +509,18 @@ export class BaseVideoController {
         if (showControlBar) {
             this.showControlBar();
         }
+    }
+
+    onMouseEvent(event) {
+        const ad = this.getCurrentAd();
+        if (ad) {
+            // Let the ad handle the click, but ensure the keyboard focus is restored.
+            setTimeout(() => window.focus(), 0);
+            return;
+        }
+
+        event.stopImmediatePropagation();
+        event.preventDefault();
     }
 
     onControlBarClick(event) {
