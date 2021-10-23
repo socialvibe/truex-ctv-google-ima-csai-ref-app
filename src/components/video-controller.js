@@ -66,6 +66,7 @@ export class BaseVideoController {
         // to ensure we still have full control.
         this.mouseCapture = this.videoOwner.querySelector('.mouse-capture');
         this.onMouseEvent = this.onMouseEvent.bind(this);
+        this.mouseCapture.addEventListener("click", this.onMouseEvent);
         this.mouseCapture.addEventListener("mousedown", this.onMouseEvent);
         this.mouseCapture.addEventListener("mouseup", this.onMouseEvent);
         this.mouseCapture.addEventListener("mouseenter", this.onMouseEvent);
@@ -517,6 +518,11 @@ export class BaseVideoController {
             // Let the ad handle the click, but ensure the keyboard focus is restored.
             setTimeout(() => window.focus(), 0);
             return;
+        }
+
+        if (event.type == "click") {
+            // Otherwise, any click on the player is a play/pause toggle.
+            this.togglePlayPause();
         }
 
         event.stopImmediatePropagation();
