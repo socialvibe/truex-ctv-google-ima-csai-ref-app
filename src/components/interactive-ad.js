@@ -21,6 +21,9 @@ export class InteractiveAd {
             try {
                 videoController.pause();
 
+                // Ensure the entire player is no longer visible.
+                videoController.videoOwner.classList.remove('show');
+
                 const options = {
                     userAdvertisingId: nativeAdvertisingId, // i.e. override from native side query if present
                     fallbackAdvertisingId: optOutAdvertisingId, // random fallback to use if no user ad id is available
@@ -144,6 +147,7 @@ export class InteractiveAd {
                 if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);
                 adOverlay = null;
             }
+            videoController.videoOwner.classList.add('show');
         }
 
         function resumePlayback() {

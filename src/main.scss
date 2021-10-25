@@ -42,7 +42,6 @@ $contentM: 160px;
 
 .page {
   display: none;
-
   &.show {
     display: block;
   }
@@ -140,7 +139,7 @@ $contentM: 160px;
 }
 
 #playback-page {
-  video, adUI {
+  video {
     position: absolute;
     top: 0;
     left: 0;
