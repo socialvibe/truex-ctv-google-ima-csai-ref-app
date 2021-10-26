@@ -22,7 +22,7 @@ export class InteractiveAd {
                 videoController.pause();
 
                 // Ensure the entire player is no longer visible.
-                videoController.videoOwner.classList.remove('show');
+                videoController.showPlayer(false);
 
                 const options = {
                     userAdvertisingId: nativeAdvertisingId, // i.e. override from native side query if present
@@ -147,7 +147,7 @@ export class InteractiveAd {
                 if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);
                 adOverlay = null;
             }
-            videoController.videoOwner.classList.add('show');
+            videoController.showPlayer(true);
         }
 
         function resumePlayback() {
