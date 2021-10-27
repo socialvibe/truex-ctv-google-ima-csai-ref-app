@@ -26,22 +26,17 @@ export class VideoJSController {
         if (!this.videoOwner) {
             throw new Error('video owner not found: ' + videoOwner);
         }
-        this.video = null;
+        this.player = null;
         this.videoStream = null;
         this.adBreakTimes = null;
 
-        this.adUI = null;
         this.adsManager = null;
-        this.adDisplayContainer = null;
-        this.adsLoader = null;
         this.currentAdProgress = null;
         this.currentAdPaused = false;
 
         this.controlBarDiv = document.querySelector(controlBarSelector);
         this.isControlBarVisible = false;
         this.showControlBarInitially = false;
-
-        this.adIndicator = document.querySelector('.ad-indicator');
 
         this.playButton = this.controlBarDiv.querySelector('.play-button');
         this.playButton.innerHTML = playSvg;
@@ -149,24 +144,10 @@ export class VideoJSController {
         this.showLoadingSpinner(true);
 
         const video = document.createElement('video');
-        this.video = video;
-        this.video.src = videoStream.url;
 
         // Put the video underneath any control overlays.
         const firstOverlayChild = this.videoOwner.firstChild;
-        this.videoOwner.insertBefore(this.video, firstOverlayChild);
-
-        if (this.platform.isAndroidTV) {
-            video.poster = 'noposter'; // work around grey play icon on Android TV.
-        }
-
-        video.addEventListener('playing', this.onVideoStarted);
-        video.addEventListener("timeupdate", this.onVideoTimeUpdate);
-
-        // Put in the placeholder for the ad UI.
-        this.adUI = document.createElement('div');
-        this.adUI.classList.add('ad-ui');
-        this.videoOwner.insertBefore(this.adUI, firstOverlayChild);
+        this.videoOwner.insertBefore(video, firstOverlayChild);
 
         this.refreshAdMarkers = true;
         const childNodes = this.adMarkersDiv.children;
@@ -174,10 +155,10 @@ export class VideoJSController {
             this.adMarkersDiv.removeChild(childNodes[i]);
         }
 
-        this.player = videojs(this.video, {
-            controls: false,
-            sources: [{src: videoStream.url, type: 'video/mp4'}]
-        });
+        this.player = videojs(video, {controls: false});
+        this.player.src({src: videoStream.url, type: 'video/mp4'});
+        this.player.on('playing', this.onVideoStarted);
+        this.player.on('timeupdate', this.onVideoTimeUpdate);
 
         // Normal scenario is to request a VAST VMAP ad playlist via a url.
         // For this demo application, we will use a canned xml response.
@@ -193,53 +174,30 @@ export class VideoJSController {
 
         this.player.on('ads-manager', response => {
             this.adsManager = response.adsManager;
-            this.addAdEventListeners();
+
+            // Add listeners to the required events.
+            this.adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, this.onAdError);
+            this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, this.onContentPauseRequested);
+            this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, this.onContentResumeRequested);
+            this.adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, this.onAdEvent);
+
+            // Listen to any additional events, if necessary.
+            this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, this.onAdEvent);
+            this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, this.onAdEvent);
+            this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, this.onAdEvent);
+            this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, this.onAdEvent);
+            this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, this.onAdEvent);
+            this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, this.onAdEvent);
+
             this.playVideo();
             this.refresh();
         });
 
-        this.adDisplayContainer = new google.ima.AdDisplayContainer(this.adUI, video);
-        this.adsLoader = new google.ima.AdsLoader(this.adDisplayContainer);
-
-        // Listen and respond to ads loaded and error events.
-        this.adsLoader.addEventListener(
-            google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, this.onAdsManagerLoaded, false);
-        this.adsLoader.addEventListener(
-            google.ima.AdErrorEvent.Type.AD_ERROR, this.onAdError, false);
-
-        // An event listener to tell the SDK that our content video
-        // is completed so the SDK can play any post-roll ads.
-        this.video.onended = () => this.adsLoader.contentComplete();
-
-        if (isFirstStart) {
-            // Request video ads.
-            var adsRequest = new google.ima.AdsRequest();
-
-            // Normal scenario is to request a VAST VMAP ad playlist via a url.
-            // For this demo application, we will use a canned xml response.
-//          adsRequest.adTagUrl = 'https://pubads.g.doubleclick.net/gampad/ads?' +
-//              'sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&' +
-//              'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&' +
-//              'cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=';
-//          adsRequest.adsResponse = googleVastSample;
-            adsRequest.adsResponse = vastAdPlaylist;
-
-            // Specify the linear and nonlinear slot sizes. This helps the SDK to
-            // select the correct creative if multiple are returned.
-            const adSize = this.getPlayerSize();
-            adsRequest.linearAdSlotWidth = adSize.width;
-            adsRequest.linearAdSlotHeight = adSize.height;
-            adsRequest.nonLinearAdSlotWidth = adSize.width;
-            adsRequest.nonLinearAdSlotHeight = adSize.height;
-
-            this.adsLoader.requestAds(adsRequest);
-        } else {
-            this.playVideo();
-        }
+        this.player.ima.initializeAdDisplayContainer();
     }
 
     stopOldVideo(newVideoStream) {
-        if (this.video) {
+        if (this.player) {
             if (newVideoStream && this.videoStream === newVideoStream) {
                 return; // already playing.
             } else {
@@ -255,21 +213,15 @@ export class VideoJSController {
 
         this.showLoadingSpinner(false);
 
-        const video = this.video;
-        if (!video) return;
+        if (!this.player) return;
+        this.player.dispose();
+        this.player = null;
 
-        this.pause();
+        // TODO: needed?
+        // if (this.video.parentNode) {
+        //     this.video.videoOwner.removeChild(video); // remove from the DOM
+        // }
 
-        video.removeEventListener('timeupdate', this.onVideoTimeUpdate);
-        video.removeEventListener('playing', this.onVideoStarted);
-
-        video.src = ''; // ensure actual video is unloaded (needed for PS4).
-
-        this.videoOwner.removeChild(video); // remove from the DOM
-        this.videoOwner.removeChild(this.adUI);
-
-        this.video = null;
-        this.adUI = null;
         this.adBreakTimes = null;
         this.seekTarget = undefined;
 
@@ -277,21 +229,10 @@ export class VideoJSController {
             this.adsManager.destroy();
             this.adsManager = null;
         }
-        if (this.adsLoader) {
-            this.adsLoader.destroy();
-            this.adsLoader = null;
-        }
-        if (this.adDisplayContainer) {
-            this.adDisplayContainer.destroy();
-            this.adDisplayContainer = null;
-        }
     }
 
-    onAdsManagerLoaded(event) {
-        const settings = new google.ima.AdsRenderingSettings();
-        settings.restoreCustomPlaybackStateOnAdBreakComplete = true;
-
-        this.adsManager = event.getAdsManager(this.video, settings);
+    onAdsManagerLoaded(response) {
+        this.adsManager = response.adsManager;
 
         // Add listeners to the required events.
         this.adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, this.onAdError);
@@ -364,15 +305,13 @@ export class VideoJSController {
 
     onContentPauseRequested() {
         console.log("video content paused");
-        this.video.pause();
-        this.adUI.classList.add('show');
+        this.player.pause();
         this.refresh();
     }
 
     onContentResumeRequested() {
         console.log("video content resumed");
-        this.video.play();
-        this.adUI.classList.remove('show');
+        this.player.play();
         this.refresh();
 
         // The client-side IMA SDK can steal the keyboard focus, esp if the user is clicking on ads.
@@ -381,30 +320,28 @@ export class VideoJSController {
     }
 
     playVideo() {
-        if (!this.video) return;
-        if (!this.adDisplayContainer) return;
+        if (!this.player) return;
         if (!this.adsManager) return;
         console.log('video playing at: ' + timeLabelOf(this.initialVideoTime));
         this.videoStarted = false; // set to true on the first playing event
         this.currVideoTime = this.initialVideoTime; // will be updated as video progresses
 
         // Initialize the container. Must be done via a user action on mobile devices.
-        this.video.load();
-        this.adDisplayContainer.initialize();
+        this.player.play();
 
         try {
             // Initialize the ads manager. Ad rules playlist will start at this time.
-            const adSize = this.getPlayerSize();
-            this.adsManager.init(adSize.width, adSize.height, google.ima.ViewMode.NORMAL);
-
-            // Call play to start showing the ad. Single video and overlay ads will
-            // start at this time; the call will be ignored for ad rules.
-            this.adsManager.start();
+            // const adSize = this.getPlayerSize();
+            // this.adsManager.init(adSize.width, adSize.height, google.ima.ViewMode.NORMAL);
+            //
+            // // Call play to start showing the ad. Single video and overlay ads will
+            // // start at this time; the call will be ignored for ad rules.
+            // this.adsManager.start();
 
         } catch (adError) {
             // An error may be thrown if there was a problem with the VAST response.
             console.error("ads manager start error: " + adError);
-            this.video.play();
+            this.player.play();
         }
     }
 
@@ -416,7 +353,7 @@ export class VideoJSController {
     }
 
     togglePlayPause() {
-        if (!this.video) {
+        if (!this.player) {
             const showControlBar = true;
             this.startVideoLater(null, showControlBar);
             return;
@@ -440,7 +377,7 @@ export class VideoJSController {
         }
 
         if (this.playPromise) return false; // consider the video has not paused if playback is pending
-        return !this.video || this.video.paused;
+        return !this.player || this.player.paused();
     }
 
     play() {
@@ -452,14 +389,14 @@ export class VideoJSController {
             return;
         }
 
-        if (!this.video) return;
+        if (!this.player) return;
         if (this.playPromise) return; // don't interrupt current play invocations
         if (this.debug) console.log(`play from: ${timeLabelOf(this.currVideoTime)}`);
         // Work around PS4 hangs by starting playback in a separate thread.
         setTimeout(() => {
-            if (!this.video) return; // video has been closed
+            if (!this.player) return; // video has been closed
             console.log("playing video");
-            this.playPromise = this.video.play();
+            this.playPromise = this.player.play();
             if (this.playPromise) {
                 this.playPromise
                 .then(() => this.playPromise = null)
@@ -479,11 +416,11 @@ export class VideoJSController {
             return;
         }
 
-        if (!this.video) return;
+        if (!this.player) return;
         if (this.playPromise) return; // don't interrupt current play invocations
         if (this.debug) console.log(`paused at: ${timeLabelOf(this.currVideoTime)}`);
         console.log("paused video");
-        this.video.pause();
+        this.player.pause();
     }
 
     stepForward() {
@@ -503,7 +440,7 @@ export class VideoJSController {
             return;
         }
 
-        if (!this.video) return; // user stepping should only happen on an active video
+        if (!this.player) return; // user stepping should only happen on an active video
         const currTime = this.currVideoTime;
 
         let seekStep = 10; // default seek step seconds
@@ -528,18 +465,18 @@ export class VideoJSController {
         const currTime = this.currVideoTime;
         if (currTime == newTarget) return; // already at the target
 
-        const video = this.video;
+        const player = this.player;
 
         // We only have a max target if the video duration is known.
-        const duration = video && video.duration;
+        const duration = player && player.duration();
         const maxTarget = duration > 0 ? duration : newTarget;
 
         this.seekTarget = Math.max(0, Math.min(newTarget, maxTarget));
 
         console.log(`seek to: ${timeLabelOf(this.seekTarget)}`);
 
-        if (video) {
-            video.currentTime = this.seekTarget;
+        if (player) {
+            player.currentTime(this.seekTarget);
 
         } else {
             // No video present yet, just record the desired current time for when it resumes.
@@ -653,32 +590,26 @@ export class VideoJSController {
     }
 
     onVideoStarted() {
-        if (!this.video) return;
+        if (!this.player) return;
         if (this.videoStarted) return;
         this.videoStarted = true;
 
         console.log('video playback started: ' + timeLabelOf(this.initialVideoTime));
 
-        if (!this.platform.supportsInitialVideoSeek && this.initialVideoTime > 0) {
-            // The initial seek is not supported, e.g. on the PS4. Do it now.
-            this.currVideoTime = 0;
-            this.seekTo(this.initialVideoTime);
+        this.showLoadingSpinner(false);
+        if (this.showControlBarInitially) {
+            const forceTimer = true;
+            this.showControlBar(forceTimer);
         } else {
-            this.showLoadingSpinner(false);
-            if (this.showControlBarInitially) {
-                const forceTimer = true;
-                this.showControlBar(forceTimer);
-            } else {
-                this.hideControlBar();
-            }
+            this.hideControlBar();
         }
     }
 
     onVideoTimeUpdate() {
-        if (!this.video) return;
+        if (!this.player) return;
         if (!this.videoStarted) return;
 
-        const newTime = this.video.currentTime;
+        const newTime = this.player.currentTime();
         if (this.debug) console.log('video time: ' + timeLabelOf(newTime));
 
         const currTime = this.currVideoTime;
@@ -692,11 +623,12 @@ export class VideoJSController {
     }
 
     getVideoDuration() {
-        const duration = this.video && this.video.duration || 0;
+        const duration = this.player && this.player.duration() || 0;
         return duration;
     }
 
     refresh() {
+        return; // TODO remove this method
         const ad = this.getCurrentAd();
         const adProgress = this.currentAdProgress;
         const durationToDisplay = ad ? ad.getDuration() : this.getVideoDuration();
