@@ -9,7 +9,7 @@ const awsCloudFrontInvalidate = require("invalidate-cloudfront-edge-cache");
 const deploy = () => {
     const bucket = "ctv.truex.com";
     const branch = process.env.TRAVIS_BRANCH;
-    const prefix = 'web/ref-app-google-IMA-CSAI/' + branch;
+    const prefix = 'web/ref-app-IMA-CSAI/' + branch;
 
     const PR = process.env.TRAVIS_PULL_REQUEST;
     const isPR = PR != "false";
@@ -22,7 +22,10 @@ const deploy = () => {
     }
 
     console.log(`deploying to ${bucket}/${prefix}`);
-    return s3.cleanFolder(bucket, prefix)
+    // Note: ensure trailing / so that only the branch folder is deleted.
+    // Otherwise, sibling folders with the same prefix are also deleted.
+    // This is due to S3 folders being just a prefix naming convention using / as a separator.
+    return s3.cleanFolder(bucket, prefix + '/')
         .then(() => {
             return uploadDist(bucket, prefix);
         })

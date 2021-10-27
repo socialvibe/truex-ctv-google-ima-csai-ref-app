@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vmap:VMAP xmlns:vmap="http://www.iab.net/videosuite/vmap" version="1.0">
+  <vmap:AdBreak timeOffset="start" breakType="linear" breakId="preroll">
+    <vmap:AdSource id="preroll-ad-1" allowMultipleAds="true" followRedirects="true">
+      <vmap:VASTAdData>
+        <VAST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd"
+            version="3.0">
+          <Ad id="truex-preroll" sequence="1">
+            <InLine>
+              <AdSystem>trueX</AdSystem>
+              <AdTitle>TrueX Interactive Preroll</AdTitle>
+              <Creatives>
+                <Creative id="truex-preroll" sequence="1">
+                  <Linear skipoffset="00:00:00">
+                    <Duration>00:00:30</Duration>
+                    <AdParameters>
+                      <![CDATA[ {"vast_config_url":"get.truex.com/72904fe382372efcdcea6314aa1d7a37db6051b9/vast/config?dimension_1=sample-video&dimension_2=0&dimension_3=sample-video&dimension_4=1234&dimension_5=evergreen&stream_position=preroll&stream_id=1234"}]]>
+                    </AdParameters>
+                    <MediaFiles>
+                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
+                    </MediaFiles>
+                  </Linear>
+                </Creative>
+              </Creatives>
+            </InLine>
+          </Ad>
+          <Ad id="coffee-preroll" sequence="2">
+            <InLine>
+              <AdSystem>GDFP</AdSystem>
+              <AdTitle>Coffee Preroll</AdTitle>
+              <Creatives>
+                <Creative id="coffee-preroll" sequence="2">
+                  <Linear>
+                    <Duration>00:00:30</Duration>
+                    <MediaFiles>
+                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://ctv.truex.com/assets/coffee-720p.mp4]]></MediaFile>
+                    </MediaFiles>
+                  </Linear>
+                </Creative>
+              </Creatives>
+            </InLine>
+          </Ad>
+        </VAST>
+      </vmap:VASTAdData>
+    </vmap:AdSource>
+  </vmap:AdBreak>
+  <vmap:AdBreak timeOffset="00:08:05.000" breakType="linear" breakId="midroll-1">
+    <vmap:AdSource id="midroll-1-ads" allowMultipleAds="true" followRedirects="true">
+      <vmap:VASTAdData>
+        <VAST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd"
+            version="3.0">
+          <Ad id="truex-midroll" sequence="1">
+            <InLine>
+              <AdSystem>trueX</AdSystem>
+              <AdTitle>TrueX Interactive Midroll</AdTitle>
+              <Creatives>
+                <Creative id="truex-midroll" sequence="1">
+                  <Linear skipoffset="00:00:00">
+                    <Duration>00:00:30</Duration>
+                    <AdParameters>
+                      <![CDATA[ {"vast_config_url":"get.truex.com/72904fe382372efcdcea6314aa1d7a37db6051b9/vast/config?dimension_1=sample-video&dimension_2=1&dimension_3=sample-video&dimension_4=5678&dimension_5=evergreen&stream_position=midroll&stream_id=1234"}]]>
+                    </AdParameters>
+                    <MediaFiles>
+                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
+                    </MediaFiles>
+                  </Linear>
+                </Creative>
+              </Creatives>
+            </InLine>
+          </Ad>
+          <Ad id="airline-midroll" sequence="2">
+            <InLine>
+              <AdSystem>GDFP</AdSystem>
+              <AdTitle>Airline Midroll</AdTitle>
+              <Creatives>
+                <Creative id="airline-midroll" sequence="2">
+                  <Linear>
+                    <Duration>00:00:30</Duration>
+                    <MediaFiles>
+                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://ctv.truex.com/assets/airline-720p.mp4]]></MediaFile>
+                    </MediaFiles>
+                  </Linear>
+                </Creative>
+              </Creatives>
+            </InLine>
+          </Ad>
+          <Ad id="pets-midroll" sequence="3">
+            <InLine>
+              <AdSystem>GDFP</AdSystem>
+              <AdTitle>Pets Midroll</AdTitle>
+              <Creatives>
+                <Creative id="pets-midroll" sequence="3">
+                  <Linear>
+                    <Duration>00:00:30</Duration>
+                    <MediaFiles>
+                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://ctv.truex.com/assets/petcare-720p.mp4]]></MediaFile>
+                    </MediaFiles>
+                  </Linear>
+                </Creative>
+              </Creatives>
+            </InLine>
+          </Ad>
+        </VAST>
+      </vmap:VASTAdData>
+    </vmap:AdSource>
+  </vmap:AdBreak>
+</vmap:VMAP>

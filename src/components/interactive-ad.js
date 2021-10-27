@@ -6,7 +6,7 @@ const optOutAdvertisingId = uuid.v4();
 
 // Exercises the True[X] Ad Renderer for interactive ads.
 export class InteractiveAd {
-    constructor(vastConfigUrl, adBreak, videoController) {
+    constructor(vastConfigUrl, videoController) {
         let adFreePod = false;
         let adOverlay;
         let tar;
@@ -14,14 +14,15 @@ export class InteractiveAd {
         const platform = videoController.platform;
 
         this.start = async () => {
-            adBreak.started = true;
-
             videoController.showLoadingSpinner(true);
 
             const nativeAdvertisingId = await getNativePlatformAdvertisingId();
 
             try {
                 videoController.pause();
+
+                // Ensure the entire player is no longer visible.
+                videoController.videoOwner.classList.remove('show');
 
                 const options = {
                     userAdvertisingId: nativeAdvertisingId, // i.e. override from native side query if present
@@ -137,21 +138,25 @@ export class InteractiveAd {
         }
 
         function closeAdOverlay() {
+            // The client-side IMA SDK can steal the keyboard focus, esp if the user is clicking on ads.
+            // Ensure the app focus is again in place.
+            window.focus();
+
             videoController.showLoadingSpinner(false);
             if (adOverlay) {
                 if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);
                 adOverlay = null;
             }
+            videoController.videoOwner.classList.add('show');
         }
 
         function resumePlayback() {
             if (adFreePod) {
                 // The user has the ad credit, skip over the ad video.
-                adBreak.completed = true;
-                videoController.skipAd(adBreak);
+                videoController.skipAdBreak();
+            } else {
+                videoController.resumeAdPlayback();
             }
-
-            videoController.startVideoLater();
         }
     }
 }

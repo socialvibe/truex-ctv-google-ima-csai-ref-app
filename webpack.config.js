@@ -11,9 +11,13 @@ module.exports = function(env) {
     return {
         mode: 'development',
         entry: {
-            main: [
-                './src/main.js',
-                './src/main.scss'
+            simple: [
+                './src/simple/simple.js',
+                './src/simple/simple.scss'
+            ],
+            integrated: [
+                './src/integrated/integrated.js',
+                './src/integrated/integrated.scss'
             ],
         },
         output: {
@@ -47,6 +51,11 @@ module.exports = function(env) {
                     use: 'svg-inline-loader',
                 },
                 {
+                    test: /\.xml$/i,
+                    exclude: /node_modules/,
+                    use: 'raw-loader',
+                },
+                {
                     test: /\.js$/,
                     use: 'babel-loader',
                     include: [
@@ -65,7 +74,12 @@ module.exports = function(env) {
             new HtmlWebpackPlugin({
                 filename: 'index.html',
                 template: './src/index.html',
-                chunks: ['main'],
+                chunks: ['simple'],
+            }),
+            new HtmlWebpackPlugin({
+                filename: 'integrated.html',
+                template: './src/index.html',
+                chunks: ['integrated'],
             })
         ],
         devtool: 'cheap-module-source-map'

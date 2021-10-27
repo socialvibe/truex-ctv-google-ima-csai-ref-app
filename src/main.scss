@@ -42,7 +42,6 @@ $contentM: 160px;
 
 .page {
   display: none;
-
   &.show {
     display: block;
   }
@@ -65,12 +64,12 @@ $contentM: 160px;
   $logoW: 300px;
   width: $logoW;
   height: ($logoW * $logoImageH) / $logoImageW;
-  background-image: url("./assets/true-vision-logo.png");
+  background-image: url("../assets/true-vision-logo.png");
   background-size: cover;
 }
 
 #home-page {
-  background-image: url("assets/home-page-background.png");
+  background-image: url("../assets/home-page-background.png");
   background-size: cover;
 
   .background-overlay {
@@ -105,7 +104,7 @@ $contentM: 160px;
     margin-top: 20px;
     width: 308px;
     height: 80px;
-    background-image: url("./assets/play-content-button.png");
+    background-image: url("../assets/play-content-button.png");
     background-size: cover;
     background-color: transparent;
   }
@@ -140,7 +139,7 @@ $contentM: 160px;
 }
 
 #playback-page {
-  video, adUI {
+  video {
     position: absolute;
     top: 0;
     left: 0;

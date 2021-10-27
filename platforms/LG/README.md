@@ -7,7 +7,7 @@
    - ensure your `PATH` env var includes the path to the SDK CLI bin
    - e.g. on the Mac it would typically be: `/opt/webOS_TV_SDK/CLI/bin`
 1. Build the project via either `npm run build-lg`
-   * Creates an .wgt installer that refers to the hosted web app at `https://ctv.truex.com/web/ref-app-google-IMA/master/index.html`
+   * Creates an .wgt installer that refers to the hosted web app at `https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html`
 1. Set up TV (See Developer Mode)
    - follow the instructions at [LG WebOS App Testing](http://webostv.developer.lge.com/develop/app-test/) to install set developer mode and securely install the app
    - basically, you install and run the "developer mode" app, sign in with your LG developer account, enable dev mode

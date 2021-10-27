@@ -18,7 +18,7 @@ In this sample application, two ad breaks are defined, `preroll` and `midroll-1`
 * `videoAdDuration`: the length of the ad fallback video contained in the main video
 * `vastUrl`: the VAST config url used to query the true[X] interactive ad description
 
-In order to start playing a video, video stream objects are given to the `startVideo` method of the app's `VideoController` instance (from `video-controller.js`). In the `setAdPlaylist` method, the vmap array is used to create an array of `AdBreak` instances, stored in the video controller's `adPlaylist` field.
+In order to start playing a video, video stream objects are given to the `startVideo` method of the app's `SimpleVideoController` instance (from `simple-video-controller.js`). In the `setAdPlaylist` method, the vmap array is used to create an array of `AdBreak` instances, stored in the video controller's `adPlaylist` field.
 
 When video playback encounters the ad break's start time offset in `onVideoTimeUpdate`, a new `InteractiveAd` instance (from `interactive-ad.js`) is created with the ad break description. Upon calling the interactive ad's `start` method, a `TruexAdRenderer` instance (i.e. `tar`) is created to render and overlay the choice card and ultimately the engagement ad over top of the playback page. If the user skips the interaction, the ad fallback video is played instead, or else the main video is cancelled entirely if the user backs out of the ad completely.
 
@@ -30,7 +30,7 @@ To begin development, run the standard `npm install` to download the project's d
 
 To deploy in general, one makes a deployable version in the `./dist` folder via `npm run build` and then hosts those contents somewhere appropriate. On then ensures the various platform installer configurations refer to that url.
 
-The hosted copy of this reference app is currently hosted at [https://ctv.truex.com/web/ref-app-google-IMA/master/index.html](https://ctv.truex.com/web/ref-app-google-IMA/master/index.html), which can be viewed directly in Chrome to review and debug the reference app generically.
+The hosted copy of this reference app is currently hosted at [https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html), which can be viewed directly in Chrome to review and debug the reference app generically.
 
 To run a local build, run the `npm start` command to run a local webpack instance. You can use `http://localhost:8080` or `http://0.0.0.0:8080` to review and debug in Chrome.
 

@@ -1,15 +1,17 @@
+
 import config from './config';
-import { DebugLog }        from 'truex-shared/components/debug-log';
+import { DebugLog } from 'truex-shared/components/debug-log';
 import { inputActions } from 'truex-shared/focus_manager/txm_input_actions';
 import { Focusable } from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
-import { ScriptLoader } from "truex-shared/utils/loaders";
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
 import { LoadingSpinner } from "./components/loading-spinner";
-import { VideoController } from "./components/video-controller";
 
-
-(function() {
+/**
+ * Main app constructor for demonstrating the of the IMA SDK for client side ad insertion.
+ * @param {Function} videoControllerClass constructor function for the video controller class to use.
+ */
+export function main(videoControllerClass) {
     const focusManager = new TXMFocusManager();
     const platform = focusManager.platform;
 
@@ -25,7 +27,7 @@ import { VideoController } from "./components/video-controller";
 
     const spinner = new LoadingSpinner();
 
-    const videoController = new VideoController("#playback-page", "#playback-page .video-control-bar", platform);
+    const videoController = new videoControllerClass("#playback-page", "#playback-page .video-control-bar", platform);
     videoController.loadingSpinner = spinner;
     videoController.closeVideoAction = returnToParentPage;
 
@@ -176,7 +178,7 @@ import { VideoController } from "./components/video-controller";
 
             if (action == inputActions.num2 || action == inputActions.rightStick) {
                 // QA helper to allow ads to be skipped.
-                videoController.skipAd();
+                videoController.skipAdBreak();
                 return true; // handled
             }
         });
@@ -277,4 +279,4 @@ import { VideoController } from "./components/video-controller";
     }
 
     initializeApplication();
-}());
+};
