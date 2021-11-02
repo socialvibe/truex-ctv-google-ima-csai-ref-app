@@ -29,6 +29,7 @@ export class BaseVideoController {
         this.adsManager = null;
         this.adDisplayContainer = null;
         this.adsLoader = null;
+        this.currentAd = null;
         this.currentAdProgress = null;
         this.currentAdPaused = false;
 
@@ -285,6 +286,8 @@ export class BaseVideoController {
         const ad = event.getAd();
         switch (event.type) {
             case google.ima.AdEvent.Type.LOADED:
+                console.log("ad loaded: " + ad.getAdId() + ' duration: ' + ad.getDuration()
+                    + ' pod: ' + ad.getAdPodInfo().getPodIndex());
                 if (!this.adBreakTimes) {
                     this.adBreakTimes = this.adsManager.getCuePoints();
                     if (this.adBreakTimes) {
@@ -296,6 +299,7 @@ export class BaseVideoController {
             case google.ima.AdEvent.Type.STARTED:
                 console.log("ad started: " + ad.getAdId() + ' duration: ' + ad.getDuration()
                     + ' pod: ' + ad.getAdPodInfo().getPodIndex());
+                this.currentAd = ad;
                 this.currentAdProgress = null;
                 this.currentAdPaused = false;
                 this.showLoadingSpinner(false);
@@ -313,7 +317,9 @@ export class BaseVideoController {
             case google.ima.AdEvent.Type.COMPLETE:
                 console.log("ad complete: " + ad.getAdId());
             case google.ima.AdEvent.Type.ALL_ADS_COMPLETED:
+                this.currentAd = null;
                 this.currentAdProgress = null;
+                this.currentAdPaused = false;
                 this.refresh();
                 break;
         }
@@ -329,6 +335,14 @@ export class BaseVideoController {
         }
     }
 
+    showPlayer(visible) {
+        if (visible) {
+            this.videoOwner.classList.add('show');;
+        } else {
+            this.videoOwner.classList.remove('show');
+        }
+    }
+
     showAdContainer(visible) {
         if (visible) {
             this.adUI.classList.add('show');;
@@ -339,14 +353,15 @@ export class BaseVideoController {
 
     onContentPauseRequested() {
         console.log("video content paused");
+        this.showAdContainer(false); // until we want an ad video to actually play.
         this.video.pause();
-        this.showAdContainer(false); // until we know we want an ad video to actually play.
         this.refresh();
     }
 
     onContentResumeRequested() {
         console.log("video content resumed");
         this.showAdContainer(false);
+        this.showPlayer(true);
         this.video.play();
         this.refresh();
 
@@ -409,8 +424,7 @@ export class BaseVideoController {
     }
 
     isPaused() {
-        const ad = this.getCurrentAd();
-        if (ad) {
+        if (this.currentAd) {
             return this.currentAdPaused;
         }
 
@@ -419,8 +433,7 @@ export class BaseVideoController {
     }
 
     play() {
-        const ad = this.getCurrentAd();
-        if (ad) {
+        if (this.currentAd) {
             this.currentAdPaused = false;
             console.log("resumed ad playback");
             this.adsManager.resume();
@@ -446,8 +459,7 @@ export class BaseVideoController {
     pause() {
         if (this.isPaused()) return;
 
-        const ad = this.getCurrentAd();
-        if (ad) {
+        if (this.currentAd) {
             this.currentAdPaused = true;
             console.log("paused ad playback");
             this.adsManager.pause();
@@ -470,8 +482,7 @@ export class BaseVideoController {
     }
 
     stepVideo(forward) {
-        const ad = this.getCurrentAd();
-        if (ad) {
+        if (this.currentAd) {
             // Don't allow user seeking during ad playback
             // Just show the control bar so the user can see the timeline.
             this.showControlBar();
@@ -527,8 +538,7 @@ export class BaseVideoController {
     }
 
     onMouseEvent(event) {
-        const ad = this.getCurrentAd();
-        if (ad) {
+        if (this.currentAd) {
             // Let the ad handle the click, but ensure the keyboard focus is restored.
             setTimeout(() => window.focus(), 0);
             return;
@@ -555,8 +565,7 @@ export class BaseVideoController {
 
         } else {
             // Interpret as a seek.
-            const ad = this.getCurrentAd();
-            if (ad) return;  // Don't allow user seeking during ad playback
+            if (this.currentAd) return;  // Don't allow user seeking during ad playback
             const timelineX = Math.max(0, mouseX - timelineBounds.left);
             const timelineRatio = timelineX / timelineBounds.width;
             const videoDuration = this.getVideoDuration();
@@ -565,9 +574,9 @@ export class BaseVideoController {
     }
 
     skipAdBreak() {
-        const ad = this.getCurrentAd();
-        if (ad) {
-            console.log(`ad break ${ad.getAdPodInfo().getPodIndex()} skipped`);
+        if (this.currentAd) {
+            console.log(`ad break ${this.currentAd.getAdPodInfo().getPodIndex()} skipped`);
+            this.currentAd = null;
             this.adsManager.discardAdBreak();
         }
         this.hideControlBar();
@@ -579,6 +588,7 @@ export class BaseVideoController {
                 this.adsManager.skip();
             }
             console.log("resumed ad playback");
+            this.showPlayer(true);
             this.showAdContainer(true);
             this.adsManager.resume();
         }
@@ -591,12 +601,8 @@ export class BaseVideoController {
         };
     }
 
-    getCurrentAd() {
-        return this.adsManager && this.adsManager.getCurrentAd();
-    }
-
     isShowingTruexAd() {
-        const ad = this.getCurrentAd();
+        const ad = this.currentAd;
         return ad && ad.getAdSystem() == 'trueX' && ad.getAdPodInfo().getAdPosition() == 1;
     }
 
@@ -606,11 +612,12 @@ export class BaseVideoController {
         // So anything not an interactive ad we just let play.
         if (!this.isShowingTruexAd()) {
             this.showAdContainer(true);
+            this.showPlayer(true);
             if (this.adsManager) this.adsManager.resume();
             return;
         }
 
-        const ad = this.getCurrentAd();
+        const ad = this.currentAd;
         const adPod = ad.getAdPodInfo();
 
         const adParams = JSON.parse(ad.getTraffickingParametersString());
@@ -624,7 +631,7 @@ export class BaseVideoController {
 
         // Ensure the entire player is no longer visible.
         this.showAdContainer(false);
-        // this.videoOwner.classList.remove('show');
+        this.showPlayer(false);
         this.showLoadingSpinner(true);
         this.hideControlBar();
         this.pause();
@@ -681,7 +688,7 @@ export class BaseVideoController {
     }
 
     refresh() {
-        const ad = this.getCurrentAd();
+        const ad = this.currentAd;
         const adProgress = this.currentAdProgress;
         const durationToDisplay = ad ? ad.getDuration() : this.getVideoDuration();
         const currTime = ad ? (adProgress ? adProgress.currentTime : 0) : this.currVideoTime;
