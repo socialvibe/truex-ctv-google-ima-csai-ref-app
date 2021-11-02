@@ -324,11 +324,10 @@ export class BaseVideoController {
     onAdError(event) {
         const err = event.getError();
         console.error("ad error: " + (err && err.getMessage() || "unknown error"));
-        if (this.adsManager) {
-            this.adsManager.destroy();
-            this.adsManager = null;
-            this.playVideo();
-        }
+        this.currentAd = null;
+        this.currentAdProgress = null;
+        this.currentAdPaused = false;
+        this.refresh();
     }
 
     showPlayer(visible) {
