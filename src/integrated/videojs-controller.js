@@ -31,12 +31,15 @@ export class VideoJSController {
         this.adBreakTimes = null;
 
         this.adsManager = null;
+        this.currentAd = null;
         this.currentAdProgress = null;
         this.currentAdPaused = false;
 
         this.controlBarDiv = document.querySelector(controlBarSelector);
         this.isControlBarVisible = false;
         this.showControlBarInitially = false;
+
+        this.adIndicator = document.querySelector('.ad-indicator');
 
         this.playButton = this.controlBarDiv.querySelector('.play-button');
         this.playButton.innerHTML = playSvg;
@@ -110,14 +113,6 @@ export class VideoJSController {
         else spinner.hide();
     }
 
-    showPlayer(visible) {
-        if (visible) {
-            this.videoOwner.classList.add('show');
-        } else {
-            this.videoOwner.classList.remove('show');
-        }
-    }
-
     // Create the video element "later" to work around some hangs and crashes, e.g. on the PS4
     startVideoLater(videoStream, showControlBar) {
         this.stopOldVideo(videoStream);
@@ -160,12 +155,12 @@ export class VideoJSController {
         this.player.on('playing', this.onVideoStarted);
         this.player.on('timeupdate', this.onVideoTimeUpdate);
 
-        // Normal scenario is to request a VAST VMAP ad playlist via a url.
-        // For this demo application, we will use a canned xml response.
+            // Normal scenario is to request a VAST VMAP ad playlist via a url.
+            // For this demo application, we will use a canned xml response.
         const imaOptions = {
             // adTagUrl: 'https://pubads.g.doubleclick.net/gampad/ads?' +
-            //     'sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&' +
-            //     'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&' +
+//              'sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&' +
+//              'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&' +
             //     'cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=',
             // adsResponse: googleVastSample,
             adsResponse: vastAdPlaylist
@@ -259,6 +254,8 @@ export class VideoJSController {
         const ad = event.getAd();
         switch (event.type) {
             case google.ima.AdEvent.Type.LOADED:
+                console.log("ad loaded: " + ad.getAdId() + ' duration: ' + ad.getDuration()
+                    + ' pod: ' + ad.getAdPodInfo().getPodIndex());
                 if (!this.adBreakTimes) {
                     this.adBreakTimes = this.adsManager.getCuePoints();
                     if (this.adBreakTimes) {
@@ -270,6 +267,7 @@ export class VideoJSController {
             case google.ima.AdEvent.Type.STARTED:
                 console.log("ad started: " + ad.getAdId() + ' duration: ' + ad.getDuration()
                     + ' pod: ' + ad.getAdPodInfo().getPodIndex());
+                this.currentAd = ad;
                 this.currentAdProgress = null;
                 this.currentAdPaused = false;
                 this.showLoadingSpinner(false);
@@ -287,7 +285,9 @@ export class VideoJSController {
             case google.ima.AdEvent.Type.COMPLETE:
                 console.log("ad complete: " + ad.getAdId());
             case google.ima.AdEvent.Type.ALL_ADS_COMPLETED:
+                this.currentAd = null;
                 this.currentAdProgress = null;
+                this.currentAdPaused = false;
                 this.refresh();
                 break;
         }
@@ -296,21 +296,39 @@ export class VideoJSController {
     onAdError(event) {
         const err = event.getError();
         console.error("ad error: " + (err && err.getMessage() || "unknown error"));
-        if (this.adsManager) {
-            this.adsManager.destroy();
-            this.adsManager = null;
-            this.playVideo();
+        this.currentAd = null;
+        this.currentAdProgress = null;
+        this.currentAdPaused = false;
+        this.refresh();
+    }
+
+    showPlayer(visible) {
+        if (visible) {
+            this.videoOwner.classList.add('show');
+        } else {
+            this.videoOwner.classList.remove('show');
+        }
+    }
+
+    showAdContainer(visible) {
+        if (visible) {
+            this.adUI.classList.add('show');
+        } else {
+            this.adUI.classList.remove('show');
         }
     }
 
     onContentPauseRequested() {
         console.log("video content paused");
-        this.player.pause();
+        this.showAdContainer(false); // until we want an ad video to actually play.
+        this.video.pause();
         this.refresh();
     }
 
     onContentResumeRequested() {
         console.log("video content resumed");
+        this.showAdContainer(false);
+        this.showPlayer(true);
         this.player.play();
         this.refresh();
 
@@ -371,8 +389,7 @@ export class VideoJSController {
     }
 
     isPaused() {
-        const ad = this.getCurrentAd();
-        if (ad) {
+        if (this.currentAd) {
             return this.currentAdPaused;
         }
 
@@ -381,8 +398,7 @@ export class VideoJSController {
     }
 
     play() {
-        const ad = this.getCurrentAd();
-        if (ad) {
+        if (this.currentAd) {
             this.currentAdPaused = false;
             console.log("resumed ad playback");
             this.adsManager.resume();
@@ -408,8 +424,7 @@ export class VideoJSController {
     pause() {
         if (this.isPaused()) return;
 
-        const ad = this.getCurrentAd();
-        if (ad) {
+        if (this.currentAd) {
             this.currentAdPaused = true;
             console.log("paused ad playback");
             this.adsManager.pause();
@@ -432,8 +447,7 @@ export class VideoJSController {
     }
 
     stepVideo(forward) {
-        const ad = this.getCurrentAd();
-        if (ad) {
+        if (this.currentAd) {
             // Don't allow user seeking during ad playback
             // Just show the control bar so the user can see the timeline.
             this.showControlBar();
@@ -489,8 +503,7 @@ export class VideoJSController {
     }
 
     onMouseEvent(event) {
-        const ad = this.getCurrentAd();
-        if (ad) {
+        if (this.currentAd) {
             // Let the ad handle the click, but ensure the keyboard focus is restored.
             setTimeout(() => window.focus(), 0);
             return;
@@ -517,8 +530,7 @@ export class VideoJSController {
 
         } else {
             // Interpret as a seek.
-            const ad = this.getCurrentAd();
-            if (ad) return;  // Don't allow user seeking during ad playback
+            if (this.currentAd) return;  // Don't allow user seeking during ad playback
             const timelineX = Math.max(0, mouseX - timelineBounds.left);
             const timelineRatio = timelineX / timelineBounds.width;
             const videoDuration = this.getVideoDuration();
@@ -527,9 +539,9 @@ export class VideoJSController {
     }
 
     skipAdBreak() {
-        const ad = this.getCurrentAd();
-        if (ad) {
-            console.log(`ad break ${ad.getAdPodInfo().getPodIndex()} skipped`);
+        if (this.currentAd) {
+            console.log(`ad break ${this.currentAd.getAdPodInfo().getPodIndex()} skipped`);
+            this.currentAd = null;
             this.adsManager.discardAdBreak();
         }
         this.hideControlBar();
@@ -541,6 +553,8 @@ export class VideoJSController {
                 this.adsManager.skip();
             }
             console.log("resumed ad playback");
+            this.showPlayer(true);
+            this.showAdContainer(true);
             this.adsManager.resume();
         }
     }
@@ -552,12 +566,8 @@ export class VideoJSController {
         };
     }
 
-    getCurrentAd() {
-        return this.adsManager && this.adsManager.getCurrentAd();
-    }
-
     isShowingTruexAd() {
-        const ad = this.getCurrentAd();
+        const ad = this.currentAd;
         return ad && ad.getAdSystem() == 'trueX' && ad.getAdPodInfo().getAdPosition() == 1;
     }
 
@@ -565,9 +575,14 @@ export class VideoJSController {
         // For true[X] IMA integration, the first ad in an ad break points to the interactive ad,
         // everything else are the fallback ad videos, or else non-truex ad videos.
         // So anything not an interactive ad we just let play.
-        if (!this.isShowingTruexAd()) return;
+        if (!this.isShowingTruexAd()) {
+            this.showAdContainer(true);
+            this.showPlayer(true);
+            if (this.adsManager) this.adsManager.resume();
+            return;
+        }
 
-        const ad = this.getCurrentAd();
+        const ad = this.currentAd;
         const adPod = ad.getAdPodInfo();
 
         const adParams = JSON.parse(ad.getTraffickingParametersString());
@@ -579,12 +594,16 @@ export class VideoJSController {
         }
         console.log(`truex ad started at ${timeLabelOf(adPod.getTimeOffset())}:\n${vastConfigUrl}`);
 
-        // Start an interactive ad.
+        // Ensure the entire player is no longer visible.
+        this.showAdContainer(false);
+        this.showPlayer(false);
+        this.showLoadingSpinner(true);
         this.hideControlBar();
         this.pause();
 
+        // Start an interactive ad.
         const interactiveAd = new InteractiveAd(vastConfigUrl, this);
-        setTimeout(() => interactiveAd.start(), 1); // show the ad "later" to work around hangs/crashes on the PS4
+        interactiveAd.start();
 
         return true; // ad started
     }
@@ -628,8 +647,8 @@ export class VideoJSController {
     }
 
     refresh() {
-        return; // TODO remove this method
-        const ad = this.getCurrentAd();
+        return; // TODO remove this method? probably not
+        const ad = this.currentAd;
         const adProgress = this.currentAdProgress;
         const durationToDisplay = ad ? ad.getDuration() : this.getVideoDuration();
         const currTime = ad ? (adProgress ? adProgress.currentTime : 0) : this.currVideoTime;
