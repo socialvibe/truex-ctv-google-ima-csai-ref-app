@@ -166,7 +166,7 @@ export class BaseVideoController {
 
         // We need to control ad playback before they play.
         const imaSettings = this.adsLoader.getSettings();
-        imaSettings.setAutoPlayAdBreaks(false);
+        //imaSettings.setAutoPlayAdBreaks(false);
 
         // Listen and respond to ads loaded and error events.
         this.adsLoader.addEventListener(
@@ -329,17 +329,25 @@ export class BaseVideoController {
         }
     }
 
+    showAdContainer(visible) {
+        if (visible) {
+            this.adUI.classList.add('show');;
+        } else {
+            this.adUI.classList.remove('show');
+        }
+    }
+
     onContentPauseRequested() {
         console.log("video content paused");
         this.video.pause();
-        this.adUI.classList.add('show');
+        this.showAdContainer(false); // until we know we want an ad video to actually play.
         this.refresh();
     }
 
     onContentResumeRequested() {
         console.log("video content resumed");
+        this.showAdContainer(false);
         this.video.play();
-        this.adUI.classList.remove('show');
         this.refresh();
 
         // The client-side IMA SDK can steal the keyboard focus, esp if the user is clicking on ads.
@@ -571,6 +579,7 @@ export class BaseVideoController {
                 this.adsManager.skip();
             }
             console.log("resumed ad playback");
+            this.showAdContainer(true);
             this.adsManager.resume();
         }
     }
@@ -596,6 +605,7 @@ export class BaseVideoController {
         // everything else are the fallback ad videos, or else non-truex ad videos.
         // So anything not an interactive ad we just let play.
         if (!this.isShowingTruexAd()) {
+            this.showAdContainer(true);
             if (this.adsManager) this.adsManager.resume();
             return;
         }
@@ -612,12 +622,16 @@ export class BaseVideoController {
         }
         console.log(`truex ad started at ${timeLabelOf(adPod.getTimeOffset())}:\n${vastConfigUrl}`);
 
-        // Start an interactive ad.
+        // Ensure the entire player is no longer visible.
+        this.showAdContainer(false);
+        // this.videoOwner.classList.remove('show');
+        this.showLoadingSpinner(true);
         this.hideControlBar();
         this.pause();
 
+        // Start an interactive ad.
         const interactiveAd = new InteractiveAd(vastConfigUrl, this);
-        setTimeout(() => interactiveAd.start(), 1); // show the ad "later" to work around hangs/crashes on the PS4
+        interactiveAd.start();
 
         return true; // ad started
     }

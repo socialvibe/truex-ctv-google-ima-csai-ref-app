@@ -9,11 +9,6 @@ export class InteractiveAd {
         let tar;
 
         this.start = () => {
-            // Ensure the entire player is no longer visible.
-            videoController.videoOwner.classList.remove('show');
-            videoController.pause();
-            videoController.showLoadingSpinner(true);
-
             try {
                 const options = {
                     //userAdvertisingId: uuid.v4(), // i.e. override for explicit user ids if needed, e.g. debugging
