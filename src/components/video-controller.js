@@ -333,7 +333,7 @@ export class BaseVideoController {
 
     showPlayer(visible) {
         if (visible) {
-            this.videoOwner.classList.add('show');;
+            this.videoOwner.classList.add('show');
         } else {
             this.videoOwner.classList.remove('show');
         }
