@@ -345,7 +345,7 @@ export class BaseVideoController {
 
     showAdContainer(visible) {
         if (visible) {
-            this.adUI.classList.add('show');;
+            this.adUI.classList.add('show');
         } else {
             this.adUI.classList.remove('show');
         }
