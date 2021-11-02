@@ -164,6 +164,10 @@ export class BaseVideoController {
         this.adDisplayContainer = new google.ima.AdDisplayContainer(this.adUI, video);
         this.adsLoader = new google.ima.AdsLoader(this.adDisplayContainer);
 
+        // We need to control ad playback before they play.
+        const imaSettings = this.adsLoader.getSettings();
+        imaSettings.setAutoPlayAdBreaks(false);
+
         // Listen and respond to ads loaded and error events.
         this.adsLoader.addEventListener(
             google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, this.onAdsManagerLoaded, false);
@@ -591,7 +595,10 @@ export class BaseVideoController {
         // For true[X] IMA integration, the first ad in an ad break points to the interactive ad,
         // everything else are the fallback ad videos, or else non-truex ad videos.
         // So anything not an interactive ad we just let play.
-        if (!this.isShowingTruexAd()) return;
+        if (!this.isShowingTruexAd()) {
+            if (this.adsManager) this.adsManager.resume();
+            return;
+        }
 
         const ad = this.getCurrentAd();
         const adPod = ad.getAdPodInfo();
