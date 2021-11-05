@@ -1,3 +1,11 @@
+video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .video-control-bar {
   $playW: 18px;
   $timelineW: 1300px;
@@ -121,27 +129,6 @@
   color: white;
   font-size: 50px;
   background-color: rgba(0, 0, 0, 0.5);
-
-  display: none;
-  &.show {
-    display: block;
-  }
-}
-
-.player-mouse-capture {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.ad-ui {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
 
   display: none;
   &.show {

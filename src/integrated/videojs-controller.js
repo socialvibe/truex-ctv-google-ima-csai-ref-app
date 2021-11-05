@@ -133,6 +133,9 @@ export class VideoJSController {
         this.showLoadingSpinner(true);
 
         const video = document.createElement('video');
+        const videoSize = this.getPlayerSize();
+        video.width = videoSize.width;
+        video.height = videoSize.height;
 
         // Put the video underneath any control overlays.
         const firstOverlayChild = this.videoOwner.firstChild;
@@ -623,7 +626,6 @@ export class VideoJSController {
     }
 
     refresh() {
-        return; // TODO remove this method? probably not
         const ad = this.currentAd;
         const adProgress = this.currentAdProgress;
         const durationToDisplay = ad ? ad.getDuration() : this.getVideoDuration();
