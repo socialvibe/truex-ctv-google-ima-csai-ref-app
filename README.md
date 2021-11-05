@@ -10,17 +10,19 @@ For a more detailed true[X] integration guide, please refer to the [CTV Web Inte
 
 # Implementation Details
 
-In this project we exercise the integration with the Google Ad server via the IMA SDK. This is meant to capture the stream's ad pods, including their duration and the reference to the true[X] payloads in each pod. 
-TODO: flesh this out a bit more, need to point on the example ads and the main video url.
+In this project we exercise the integration with the Google Ad server via the [HTML5 Google IMA SDK](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) for client-side ad insertion.
 
-In this sample application, two ad breaks are defined, `preroll` and `midroll-1`. Key fields are:
-* `timeOffset`: the main video time the ad starts at. Note that ads are stiched in to the main video, so the true video time consists of the main video plus all of the ad video durations.
-* `videoAdDuration`: the length of the ad fallback video contained in the main video
-* `vastUrl`: the VAST config url used to query the true[X] interactive ad description
+The main video is defined by the [video-streams.json](./src/data/video-streams.json) file. The ads are canned, and are defined in the [sample-ad-playlist.xml](./src/data/sample-ad-playlist.xml) file. In this sample application, a preroll and a midroll ad breaks are defined.
 
-In order to start playing a video, video stream objects are given to the `startVideo` method of the app's `SimpleVideoController` instance (from `simple-video-controller.js`). In the `setAdPlaylist` method, the vmap array is used to create an array of `AdBreak` instances, stored in the video controller's `adPlaylist` field.
+Two versions are the app are demonstrated in this code base, a "simple" integration to the pure IMA SDK, integrating to our own HTML5 video element, with app specific video controls. This app's entry point is defined in the [simple.js](./src/simple/simple.js) file, with the core IMA SDK integration implemented in [simple-video-controller.js](./src/simple/simple-video-controller.js). The simple app version is hosted [here with the index.html entry point](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html).
 
-When video playback encounters the ad break's start time offset in `onVideoTimeUpdate`, a new `InteractiveAd` instance (from `interactive-ad.js`) is created with the ad break description. Upon calling the interactive ad's `start` method, a `TruexAdRenderer` instance (i.e. `tar`) is created to render and overlay the choice card and ultimately the engagement ad over top of the playback page. If the user skips the interaction, the ad fallback video is played instead, or else the main video is cancelled entirely if the user backs out of the ad completely.
+A higher level integration to the IMA SDK using the popular [videojs package](https://www.npmjs.com/package/videojs) is demonstrated with the [integrated.js](./src/integrated/integrated.js) app file, with the videojs/IMA integration implemented in [videojs-controller.js](./src/integrated/videojs-controller.js). The integrated app version is hosted [here with the integrated.html entry point](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/integrated.html).
+
+For both apps, the same [index.html](./src/index.html) main page is used.
+
+In order to start playing a video, video stream objects are given to the `startVideo` method of the app's video controller instance. In the `onAdEvent` method, various ad events are fielded, the key one being `AdEvent.Type.STARTED`. There the app determines if a true[X] ad is present vs a regular video ad. If so, the an `InteractiveAd` instance is created to display it. If not, IMA adsManager instance continues to play the non-true[X] ad video. 
+
+To display a true[X] ad, a new `InteractiveAd` instance (from [interactive-ad.js](./src/components/interactive-ad.js)) is created with vast config url extracted from the ad instance's tag parameters. Upon calling the interactive ad's `start` method, a `TruexAdRenderer` instance (i.e. `tar`) is created to render and overlay the choice card and ultimately the engagement ad over top of the playback page. If the user skips the interaction, the ad fallback video is played instead, or else the main video is cancelled entirely if the user backs out of the ad completely.
 
 The `tar` integration flow is described in the `start` method, with the key responsibilities for the host application developer being showing the the `handleAdEvent` method, which fields ad events to track the state of ad changes, until the ad is ultimately completed or cancelled, tracking in particular whether the viewer interacted enough with the ad to earn a free pod skip to continue with the main video, or else fallback to playing the ad videos instead.
 
@@ -28,9 +30,7 @@ The `tar` integration flow is described in the `start` method, with the key resp
 
 To begin development, run the standard `npm install` to download the project's dependencies.
 
-To deploy in general, one makes a deployable version in the `./dist` folder via `npm run build` and then hosts those contents somewhere appropriate. On then ensures the various platform installer configurations refer to that url.
-
-The hosted copy of this reference app is currently hosted at [https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html), which can be viewed directly in Chrome to review and debug the reference app generically.
+To deploy in general, one makes a deployable version in the `./dist` folder via `npm run build` and then hosts those contents somewhere appropriate. On then ensures the various platform installer configurations refer to that url. Again, [simple](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html) and [integrated](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/integrated.html) hosted copies of the reference app are available for viewing in a browser, to review and debug the reference app generically.
 
 To run a local build, run the `npm start` command to run a local webpack instance. You can use `http://localhost:8080` or `http://0.0.0.0:8080` to review and debug in Chrome.
 
