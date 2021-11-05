@@ -63,15 +63,9 @@ export class SimpleVideoController {
         this.loadingSpinner = null;
         this.playPromise = null;
 
-        // The IMA SDK captures mouse clicks and keyboard focus. We intercept mouse events when ads are not playing
-        // to ensure we still have full control.
-        this.onMouseEvent = this.onMouseEvent.bind(this);
-        this.mouseCapture = this.videoOwner.querySelector('.player-mouse-capture');
-        this.mouseCapture.addEventListener("click", this.onMouseEvent);
-        this.mouseCapture.addEventListener("mousedown", this.onMouseEvent);
-        this.mouseCapture.addEventListener("mouseup", this.onMouseEvent);
-        this.mouseCapture.addEventListener("mouseenter", this.onMouseEvent);
-        this.mouseCapture.addEventListener("mouseexit", this.onMouseEvent);
+        // The client-side IMA SDK can steal the keyboard focus, esp if the user is clicking on ads.
+        // Ensure the app focus is again in place.
+        this.videoOwner.addEventListener("click", () => window.focus());
 
         this.onControlBarClick = this.onControlBarClick.bind(this);
         this.controlBarDiv.addEventListener('click', this.onControlBarClick);
@@ -257,13 +251,10 @@ export class SimpleVideoController {
 
         this.adsManager = event.getAdsManager(this.video, settings);
 
-        // Add listeners to the required events.
         this.adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, this.onAdError);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, this.onContentPauseRequested);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, this.onContentResumeRequested);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, this.onAdEvent);
-
-        // Listen to any additional events, if necessary.
         this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, this.onAdEvent);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, this.onAdEvent);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, this.onAdEvent);
@@ -530,22 +521,6 @@ export class SimpleVideoController {
         if (showControlBar) {
             this.showControlBar();
         }
-    }
-
-    onMouseEvent(event) {
-        if (this.currentAd) {
-            // Let the ad handle the click, but ensure the keyboard focus is restored.
-            setTimeout(() => window.focus(), 0);
-            return;
-        }
-
-        if (event.type == "click") {
-            // Otherwise, any click on the player is a play/pause toggle.
-            this.togglePlayPause();
-        }
-
-        event.stopImmediatePropagation();
-        event.preventDefault();
     }
 
     onControlBarClick(event) {
