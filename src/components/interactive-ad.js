@@ -11,7 +11,6 @@ export class InteractiveAd {
         this.start = () => {
             try {
                 const options = {
-                    //userAdvertisingId: uuid.v4(), // i.e. override for explicit user ids if needed, e.g. debugging
                     supportsUserCancelStream: true // i.e. user backing out of an ad will cancel the entire video
                 };
 

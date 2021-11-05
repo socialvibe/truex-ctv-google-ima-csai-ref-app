@@ -17,6 +17,8 @@ export class SimpleVideoController {
     constructor(videoOwner, controlBarSelector, platform) {
         this.debug = false; // set to true to enable more verbose video time logging.
 
+        this.currentUserId = null; // filled in by caller
+
         this.videoOwner = document.querySelector(videoOwner);
         if (!this.videoOwner) {
             throw new Error('video owner not found: ' + videoOwner);
@@ -597,6 +599,12 @@ export class SimpleVideoController {
         if (!vastConfigUrl.startsWith('http')) {
             vastConfigUrl = 'https://' + vastConfigUrl;
         }
+
+        // A real integration would have stream and user id macros already substituted in from the VAST server.
+        // We do it now to work around ad usage capping due to static ids.
+        vastConfigUrl = vastConfigUrl.replace('#{stream-id}', this.videoStream.id);
+        vastConfigUrl = vastConfigUrl.replace('#{user-id}', this.currentUserId);
+
         console.log(`truex ad started at ${timeLabelOf(adPod.getTimeOffset())}:\n${vastConfigUrl}`);
 
         // Ensure the entire player is no longer visible.
