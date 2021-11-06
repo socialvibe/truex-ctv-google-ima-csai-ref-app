@@ -10,6 +10,9 @@ import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
 
+import 'videojs-contrib-ads/dist/videojs-contrib-ads.css';
+import 'videojs-ima/dist/videojs.ima.css';
+
 import vastAdPlaylist from '../data/sample-ad-playlist.xml';
 import googleVastSample from '../data/google-vast-sample.xml';
 
@@ -135,6 +138,7 @@ export class VideoJSController {
         this.showLoadingSpinner(true);
 
         const video = document.createElement('video');
+        video.className = "video-js vjs-default-skin";
         const videoSize = this.getPlayerSize();
         video.width = videoSize.width;
         video.height = videoSize.height;
@@ -154,15 +158,17 @@ export class VideoJSController {
         this.player.on('playing', this.onVideoStarted);
         this.player.on('timeupdate', this.onVideoTimeUpdate);
 
-            // Normal scenario is to request a VAST VMAP ad playlist via a url.
-            // For this demo application, we will use a canned xml response.
+        // Normal scenario is to request a VAST VMAP ad playlist via a url.
+        // For this demo application, we will use a canned xml response.
         const imaOptions = {
             // adTagUrl: 'https://pubads.g.doubleclick.net/gampad/ads?' +
 //              'sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&' +
 //              'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&' +
             //     'cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=',
             // adsResponse: googleVastSample,
-            adsResponse: vastAdPlaylist
+            adsResponse: vastAdPlaylist,
+
+            adLabel: "Ad"
         };
         this.player.ima(imaOptions);
 
