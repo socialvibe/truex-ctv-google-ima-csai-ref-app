@@ -18,13 +18,13 @@ export class InteractiveAd {
                 tar.subscribe(handleAdEvent);
 
                 return tar.init()
-                .then(vastConfig => {
-                    return tar.start(vastConfig);
-                })
-                .then(newAdOverlay => {
-                    adOverlay = newAdOverlay;
-                })
-                .catch(handleAdError);
+                    .then(vastConfig => {
+                        return tar.start(vastConfig);
+                    })
+                    .then(newAdOverlay => {
+                        adOverlay = newAdOverlay;
+                    })
+                    .catch(handleAdError);
             } catch (err) {
                 handleAdError(err);
             }
