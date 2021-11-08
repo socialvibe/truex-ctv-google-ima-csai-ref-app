@@ -81,7 +81,6 @@ export class VideoJSController {
 
         this.onVideoTimeUpdate = this.onVideoTimeUpdate.bind(this);
         this.onVideoStarted = this.onVideoStarted.bind(this);
-        this.onAdsManagerLoaded = this.onAdsManagerLoaded.bind(this);
         this.onAdEvent = this.onAdEvent.bind(this);
         this.onAdError = this.onAdError.bind(this);
         this.onContentPauseRequested = this.onContentPauseRequested.bind(this);
@@ -224,28 +223,6 @@ export class VideoJSController {
         }
     }
 
-    onAdsManagerLoaded(response) {
-        this.adsManager = response.adsManager;
-
-        // Add listeners to the required events.
-        this.adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, this.onAdError);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, this.onContentPauseRequested);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, this.onContentResumeRequested);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, this.onAdEvent);
-
-        // Listen to any additional events, if necessary.
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, this.onAdEvent);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, this.onAdEvent);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, this.onAdEvent);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, this.onAdEvent);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, this.onAdEvent);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, this.onAdEvent);
-
-        this.playVideo();
-
-        this.refresh();
-    }
-
     onAdEvent(event) {
         // Retrieve the ad from the event. Some events (e.g. ALL_ADS_COMPLETED)
         // don't have ad object associated.
@@ -321,7 +298,7 @@ export class VideoJSController {
     onContentPauseRequested() {
         console.log("video content paused");
         this.showAdContainer(false); // until we want an ad video to actually play.
-        this.video.pause();
+        this.player.pause();
         this.refresh();
     }
 
@@ -519,6 +496,7 @@ export class VideoJSController {
     resumeAdPlayback() {
         if (this.adsManager) {
             if (this.isShowingTruexAd()) {
+                // Skip over the truex placeholder ad.
                 this.adsManager.skip();
             }
             console.log("resumed ad playback");
