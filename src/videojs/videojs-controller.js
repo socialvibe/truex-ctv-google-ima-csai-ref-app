@@ -320,8 +320,6 @@ export class VideoJSController {
         console.log('video playing at: ' + timeLabelOf(this.initialVideoTime));
         this.videoStarted = false; // set to true on the first playing event
         this.currVideoTime = this.initialVideoTime; // will be updated as video progresses
-
-        // Initialize the container. Must be done via a user action on mobile devices.
         this.player.play();
     }
 
