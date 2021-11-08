@@ -140,9 +140,10 @@ export class VideoJSController {
 
         const video = document.createElement('video');
         video.className = "video-js vjs-default-skin";
-        const videoSize = this.getPlayerSize();
-        video.width = videoSize.width;
-        video.height = videoSize.height;
+
+        // Ensure the video is explicitly sized so that the IMA SDK knows how to size the ads.
+        video.width = this.videoOwner.clientWidth;
+        video.height = this.videoOwner.clientHeight;
 
         // Put the video underneath any control overlays.
         const firstOverlayChild = this.videoOwner.firstChild;
@@ -351,21 +352,6 @@ export class VideoJSController {
 
         // Initialize the container. Must be done via a user action on mobile devices.
         this.player.play();
-
-        try {
-            // Initialize the ads manager. Ad rules playlist will start at this time.
-            // const adSize = this.getPlayerSize();
-            // this.adsManager.init(adSize.width, adSize.height, google.ima.ViewMode.NORMAL);
-            //
-            // // Call play to start showing the ad. Single video and overlay ads will
-            // // start at this time; the call will be ignored for ad rules.
-            // this.adsManager.start();
-
-        } catch (adError) {
-            // An error may be thrown if there was a problem with the VAST response.
-            console.error("ads manager start error: " + adError);
-            this.player.play();
-        }
     }
 
     stopControlBarTimer() {
@@ -546,13 +532,6 @@ export class VideoJSController {
             this.showAdContainer(true);
             this.adsManager.resume();
         }
-    }
-
-    getPlayerSize() {
-        return {
-            width: this.videoOwner.clientWidth,
-            height: this.videoOwner.clientHeight
-        };
     }
 
     isShowingTruexAd() {
