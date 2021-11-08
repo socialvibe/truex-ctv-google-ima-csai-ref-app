@@ -20,8 +20,8 @@ import googleVastSample from '../data/google-vast-sample.xml';
 
 /**
  * Presents a video controller that demonstrates the client-side ad insertion IMA SDK
- * in conjunction with the VideoJS video player and plugins, which manages the video player
- * / ad player switching out of the box.
+ * in conjunction with the VideoJS video player and plugins, which manages the
+ * video player / ad player switching out of the box.
  */
 export class VideoJSController {
     constructor(videoOwner, controlBarSelector, platform) {
