@@ -10,6 +10,7 @@ import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
 
+import 'video.js/dist/video-js.min.css';
 import 'videojs-contrib-ads/dist/videojs-contrib-ads.css';
 import 'videojs-ima/dist/videojs.ima.css';
 

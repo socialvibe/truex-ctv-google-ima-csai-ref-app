@@ -10,6 +10,11 @@
   z-index: 0 !important; // bring it back under the video control UX
 }
 
+// We are showing our own controls, and so want to hide the default IMA ones.
+.ima-controls-div {
+  display: none !important;
+}
+
 // Ensure control bar overlays are above the ad:
 .video-control-bar, .ad-indicator {
   z-index: 10;
