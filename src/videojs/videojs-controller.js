@@ -314,12 +314,13 @@ export class VideoJSController {
     }
 
     showAdContainer(visible) {
-        // TODO: find and hide the container
-        // if (visible) {
-        //     this.adUI.classList.add('show');
-        // } else {
-        //     this.adUI.classList.remove('show');
-        // }
+        const adContainer = this.videoOwner.querySelector('.ima-ad-container');
+        if (!adContainer) return;
+        if (visible) {
+            adContainer.classList.add('show');
+        } else {
+            adContainer.classList.remove('show');
+        }
     }
 
     onContentPauseRequested() {

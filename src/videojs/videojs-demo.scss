@@ -8,10 +8,15 @@
   width: 100%;
   height: 100%;
   z-index: 0 !important; // bring it back under the video control UX
+
+  display: none !important; // hidden by default to avoid flashes of the truex placeholder ad
+  &.show {
+    display: block !important;
+  }
 }
 
 // We are showing our own controls, and so want to hide the default IMA ones.
-.ima-controls-div {
+.ima-controls-div, .vjs-loading-spinner {
   display: none !important;
 }
 
