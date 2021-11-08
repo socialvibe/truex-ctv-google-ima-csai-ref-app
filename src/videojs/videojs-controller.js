@@ -125,7 +125,6 @@ export class VideoJSController {
 
         this.showControlBarInitially = showControlBar || false;
 
-        const isFirstStart = !!videoStream;
         if (videoStream) {
             this.videoStream = videoStream;
             this.initialVideoTime = 0; // ensure we start at the beginning
@@ -140,7 +139,6 @@ export class VideoJSController {
         this.showLoadingSpinner(true);
 
         const video = document.createElement('video');
-        video.className = "video-js vjs-default-skin";
 
         // Ensure the video is explicitly sized so that the IMA SDK knows how to size the ads.
         video.width = this.videoOwner.clientWidth;
