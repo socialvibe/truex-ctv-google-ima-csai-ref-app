@@ -215,11 +215,6 @@ export class VideoJSController {
         this.player.dispose();
         this.player = null;
 
-        // TODO: needed?
-        // if (this.video.parentNode) {
-        //     this.video.videoOwner.removeChild(video); // remove from the DOM
-        // }
-
         this.adBreakTimes = null;
         this.seekTarget = undefined;
 
