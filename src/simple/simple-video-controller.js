@@ -256,13 +256,11 @@ export class SimpleVideoController {
         this.adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, this.onAdError);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, this.onContentPauseRequested);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, this.onContentResumeRequested);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, this.onAdEvent);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, this.onAdEvent);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, this.onAdEvent);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, this.onAdEvent);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, this.onAdEvent);
-        this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, this.onAdEvent);
         this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, this.onAdEvent);
+        this.adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, this.onAdEvent);
 
         this.playVideo();
 
