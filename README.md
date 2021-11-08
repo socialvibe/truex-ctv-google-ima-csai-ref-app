@@ -16,7 +16,7 @@ The main video is defined by the [video-streams.json](./src/data/video-streams.j
 
 Two versions are the app are demonstrated in this code base, a "simple" integration to the pure IMA SDK, integrating to our own HTML5 video element, with app specific video controls. This app's entry point is defined in the [simple.js](./src/simple/simple.js) file, with the core IMA SDK integration implemented in [simple-video-controller.js](./src/simple/simple-video-controller.js). The simple app version is hosted [here with the index.html entry point](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html).
 
-A higher level integration to the IMA SDK using the popular [videojs package](https://www.npmjs.com/package/videojs) is demonstrated with the [integrated.js](./src/integrated/integrated.js) app file, with the videojs/IMA integration implemented in [videojs-controller.js](./src/integrated/videojs-controller.js). The integrated app version is hosted [here with the integrated.html entry point](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/integrated.html).
+A higher level integration to the IMA SDK using the popular [videojs package](https://www.npmjs.com/package/videojs) is demonstrated with the [videojs-demo.js](src/videojs/videojs-demo.js) app file, with the videojs/IMA integration implemented in [videojs-controller.js](src/videojs/videojs-controller.js). The integrated app version is hosted [here with the integrated.html entry point](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/videojs-demo.html).
 
 For both apps, the same [index.html](./src/index.html) main page is used.
 
@@ -30,7 +30,7 @@ The `tar` integration flow is described in the `start` method, with the key resp
 
 To begin development, run the standard `npm install` to download the project's dependencies.
 
-To deploy in general, one makes a deployable version in the `./dist` folder via `npm run build` and then hosts those contents somewhere appropriate. On then ensures the various platform installer configurations refer to that url. Again, [simple](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html) and [integrated](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/integrated.html) hosted copies of the reference app are available for viewing in a browser, to review and debug the reference app generically.
+To deploy in general, one makes a deployable version in the `./dist` folder via `npm run build` and then hosts those contents somewhere appropriate. On then ensures the various platform installer configurations refer to that url. Again, [simple](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html) and [videojs-demo](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/videojs-demo.html) hosted copies of the reference app are available for viewing in a browser, to review and debug the reference app generically.
 
 To run a local build, run the `npm start` command to run a local webpack instance. You can use `http://localhost:8080` or `http://0.0.0.0:8080` to review and debug in Chrome.
 
