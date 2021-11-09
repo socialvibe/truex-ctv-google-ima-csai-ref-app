@@ -12,6 +12,14 @@ For a more detailed true[X] integration guide, please refer to the [CTV Web Inte
 
 In this project we exercise the integration with the Google Ad server via the [HTML5 Google IMA SDK](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) for client-side ad insertion.
 
+The bulk of the code represents a more or less canonical media app that breaks down as follows:
+* [index.html](./src/index.html), [main.js](./src/main.js): main application page and app logic, presenting "typical" landing content playback pages.
+* video controller classes, i.e. [simple-video-controller.js](./src/simple/simple-video-controller.js) and [videojs-controller.js](./src/videojs/videojs-controller.js): player controller for play/pause/seek support, and ad feed integration and ad playback.
+  * A key true[X] integration point is in the `startInterativeAd()` method, which decides when a true[X] ad is recognized in the ad feed, and thus to either display it or fallback to the regular ad videos in the ad break.
+* [interactive-ad.js](./src/components/interactive-ad.js): true[X] ad component, creates and starts the `TruexAdRenderer` instance to display the true[X] interactive ad.
+  * This is the main integration point to the true[X] SDK.
+  * When the true[X] ad completes, one either skips the ad break to resumne content playback (via `videoController.skipAdBreak()`) or fallback to playing the remaining ad videos in the ad break (via `videoController.resumeAdPlayback()`), depending on whether or not the user earned the the "interaction credit" within the true[X] ad.
+
 The main video is defined by the [video-streams.json](./src/data/video-streams.json) file. The ads are canned, and are defined in the [sample-ad-playlist.xml](./src/data/sample-ad-playlist.xml) file. In this sample application, a preroll and a midroll ad breaks are defined.
 
 Two versions are the app are demonstrated in this code base, a "simple" integration to the pure IMA SDK, integrating to our own HTML5 video element, with app specific video controls. This app's entry point is defined in the [simple.js](./src/simple/simple.js) file, with the core IMA SDK integration implemented in [simple-video-controller.js](./src/simple/simple-video-controller.js). The simple app version is hosted [here with the index.html entry point](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html).
@@ -20,7 +28,7 @@ A higher level integration to the IMA SDK using the popular [videojs package](ht
 
 For both apps, the same [index.html](./src/index.html) main page is used.
 
-In order to start playing a video, video stream objects are given to the `startVideo` method of the app's video controller instance. In the `onAdEvent` method, various ad events are fielded, the key one being `AdEvent.Type.STARTED`. There the app determines if a true[X] ad is present vs a regular video ad. If so, the an `InteractiveAd` instance is created to display it. If not, IMA adsManager instance continues to play the non-true[X] ad video. 
+In order to start playing a video, video stream objects are given to the `startVideo` method of the app's video controller instance. In the `onAdEvent` method, various ad events are fielded, the key one being `AdEvent.Type.STARTED`. There the app determines in the `startInteractiveAd()` method if a true[X] ad is present vs a regular video ad. If so, the an `InteractiveAd` instance is created to display it. If not, IMA adsManager instance continues to play the non-true[X] ad video. 
 
 To display a true[X] ad, a new `InteractiveAd` instance (from [interactive-ad.js](./src/components/interactive-ad.js)) is created with vast config url extracted from the ad instance's tag parameters. Upon calling the interactive ad's `start` method, a `TruexAdRenderer` instance (i.e. `tar`) is created to render and overlay the choice card and ultimately the engagement ad over top of the playback page. If the user skips the interaction, the ad fallback video is played instead, or else the main video is cancelled entirely if the user backs out of the ad completely.
 
