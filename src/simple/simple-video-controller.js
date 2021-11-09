@@ -576,6 +576,7 @@ export class SimpleVideoController {
         return ad && ad.getAdSystem() == 'trueX' && ad.getAdPodInfo().getAdPosition() == 1;
     }
 
+    // Implements a key true[X] integration point, i.e. how to recognize a true[X] ad in the ad feed.
     startInteractiveAd() {
         // For true[X] IMA integration, the first ad in an ad break points to the interactive ad,
         // everything else are the fallback ad videos, or else non-truex ad videos.
@@ -600,6 +601,8 @@ export class SimpleVideoController {
 
         // A real integration would have stream and user id macros already substituted in from the VAST server.
         // We do it now to work around ad usage capping due to static ids.
+        // NOTE: this is needed only let ads be reliably available for demo purposes. A production version would
+        // use the vast config urls from the VAST descriptor as is.
         vastConfigUrl = vastConfigUrl.replace('#{stream-id}', this.videoStream.id);
         vastConfigUrl = vastConfigUrl.replace('#{user-id}', this.currentUserId);
 
