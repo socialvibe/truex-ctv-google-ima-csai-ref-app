@@ -15,9 +15,9 @@ module.exports = function(env) {
                 './src/simple/simple.js',
                 './src/simple/simple.scss'
             ],
-            integrated: [
-                './src/integrated/integrated.js',
-                './src/integrated/integrated.scss'
+            videojs: [
+                './src/videojs/videojs-demo.js',
+                './src/videojs/videojs-demo.scss'
             ],
         },
         output: {
@@ -29,6 +29,10 @@ module.exports = function(env) {
                 {
                     test: /\.scss$/,
                     use: ['style-loader', 'css-loader', 'sass-loader']
+                },
+                {
+                    test: /\.css$/,
+                    use: ['style-loader', 'css-loader']
                 },
                 {
                     test: /\.html$/,
@@ -77,9 +81,9 @@ module.exports = function(env) {
                 chunks: ['simple'],
             }),
             new HtmlWebpackPlugin({
-                filename: 'integrated.html',
+                filename: 'videojs-demo.html',
                 template: './src/index.html',
-                chunks: ['integrated'],
+                chunks: ['videojs'],
             })
         ],
         devtool: 'cheap-module-source-map'

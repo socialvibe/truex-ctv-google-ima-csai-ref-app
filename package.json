@@ -51,6 +51,9 @@
         "core-js": "^3.6.4",
         "truex-shared": "https://github.com/socialvibe/truex-shared-js.git#1.5.4",
         "uuid": "^3.4.0",
+        "video.js": "^7.15.4",
+        "videojs-contrib-ads": "^6.9.0",
+        "videojs-ima": "^1.11.0",
         "whatwg-fetch": "^3.0.0"
     }
 }

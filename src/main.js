@@ -6,6 +6,8 @@ import { Focusable } from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
 import { LoadingSpinner } from "./components/loading-spinner";
+import { v4 as uuid } from 'uuid';
+import videoStreams from "./data/video-streams.json";
 
 /**
  * Main app constructor for demonstrating the of the IMA SDK for client side ad insertion.
@@ -27,12 +29,16 @@ export function main(videoControllerClass) {
 
     const spinner = new LoadingSpinner();
 
+    const currentVideoStream = videoStreams[0];
+
+    // Randomize the stream id and current user id for this session, to work around ad usage capping.
+    const currentUserId = uuid();
+    currentVideoStream.id = uuid();
+
     const videoController = new videoControllerClass("#playback-page", "#playback-page .video-control-bar", platform);
+    videoController.currentUserId = currentUserId;
     videoController.loadingSpinner = spinner;
     videoController.closeVideoAction = returnToParentPage;
-
-    const videoStreams = require('./data/video-streams.json');
-    let currentVideoStream = videoStreams[0];
 
     function hidePage() {
         // Ensure no videos are playing

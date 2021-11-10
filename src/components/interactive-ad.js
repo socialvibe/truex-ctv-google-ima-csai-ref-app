@@ -2,6 +2,7 @@ import uuid from 'uuid';
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
 
 // Exercises the True[X] Ad Renderer for interactive ads.
+// NOTE: this is the main integration point for display interactive ads via the true[X] SDK.
 export class InteractiveAd {
     constructor(vastConfigUrl, videoController) {
         let adFreePod = false;
@@ -11,7 +12,6 @@ export class InteractiveAd {
         this.start = () => {
             try {
                 const options = {
-                    //userAdvertisingId: uuid.v4(), // i.e. override for explicit user ids if needed, e.g. debugging
                     supportsUserCancelStream: true // i.e. user backing out of an ad will cancel the entire video
                 };
 
@@ -95,7 +95,7 @@ export class InteractiveAd {
                 if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);
                 adOverlay = null;
             }
-            videoController.videoOwner.classList.add('show');
+            videoController.showPlayer(true);
         }
 
         function resumePlayback() {
