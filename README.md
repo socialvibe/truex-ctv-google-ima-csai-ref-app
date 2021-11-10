@@ -38,7 +38,7 @@ The `tar` integration flow is described in the `start` method, with the key resp
 
 To begin development, run the standard `npm install` to download the project's dependencies.
 
-To deploy in general, one makes a deployable version in the `./dist` folder via `npm run build` and then hosts those contents somewhere appropriate. On then ensures the various platform installer configurations refer to that url. Again, [simple](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html) and [videojs-demo](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/videojs-demo.html) hosted copies of the reference app are available for viewing in a browser, to review and debug the reference app generically.
+To deploy in general, one makes a deployable version in the `./dist` folder via `npm run build` and then hosts those contents somewhere appropriate. One then ensures the various platform installer configurations refer to that url. Again, [simple](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html) and [videojs-demo](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/videojs-demo.html) hosted copies of the reference app are available for viewing in a browser, to review and debug the reference app generically.
 
 To run a local build, run the `npm start` command to run a local webpack instance. You can use `http://localhost:8080` or `http://0.0.0.0:8080` to review and debug in Chrome.
 
