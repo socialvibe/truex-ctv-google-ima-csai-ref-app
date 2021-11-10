@@ -16,7 +16,6 @@ import 'videojs-contrib-ads/dist/videojs-contrib-ads.css';
 import 'videojs-ima/dist/videojs.ima.css';
 
 import vastAdPlaylist from '../data/sample-ad-playlist.xml';
-import googleVastSample from '../data/google-vast-sample.xml';
 
 /**
  * Presents a video controller that demonstrates the client-side ad insertion IMA SDK
@@ -165,7 +164,6 @@ export class VideoJSController {
 //              'sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&' +
 //              'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&' +
             //     'cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=',
-            // adsResponse: googleVastSample,
             adsResponse: vastAdPlaylist,
 
             adLabel: "Ad"

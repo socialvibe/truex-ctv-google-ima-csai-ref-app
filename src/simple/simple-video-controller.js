@@ -7,7 +7,6 @@ import pauseSvg from '../assets/pause-button.svg';
 import { InteractiveAd } from "../components/interactive-ad";
 
 import vastAdPlaylist from '../data/sample-ad-playlist.xml';
-import googleVastSample from '../data/google-vast-sample.xml';
 
 /**
  * Presents a video controller that demonstrates the "simple" use of the client-side ad insertion IMA SDK
@@ -181,7 +180,6 @@ export class SimpleVideoController {
 //              'sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&' +
 //              'impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&' +
 //              'cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=';
-//          adsRequest.adsResponse = googleVastSample;
             adsRequest.adsResponse = vastAdPlaylist;
 
             // Specify the linear and nonlinear slot sizes. This helps the SDK to
