@@ -8,6 +8,7 @@ import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
 import { LoadingSpinner } from "./components/loading-spinner";
 import { v4 as uuid } from 'uuid';
 import videoStreams from "./data/video-streams.json";
+import splashImage from "./assets/truex-splash.png";
 
 /**
  * Main app constructor for demonstrating the of the IMA SDK for client side ad insertion.
@@ -278,10 +279,26 @@ export function main(videoControllerClass) {
             // for LG see https://webostv.developer.lge.com/develop/app-developer-guide/back-button/
             pushBackActionBlock(); // push a back action block
             window.addEventListener("popstate", onBackAction);
+
+            // Hide the splash page when the home page is ready.
+            setTimeout(hideSplashScreenWhenLoaded, 500);
         } catch (err) {
             console.error('initialization error: ' + platform.describeErrorWithStack(err));
+            hideSplashScreen();
             setTimeout(() => debugLog.show(), 0);
         }
+    }
+
+    function hideSplashScreenWhenLoaded() {
+        const homeBackground = new Image();
+        homeBackground.addEventListener('load', hideSplashScreen);
+        homeBackground.addEventListener('error', hideSplashScreen);
+        homeBackground.src = splashImage;
+    }
+
+    function hideSplashScreen() {
+        const splash = document.querySelector('.splash-page');
+        if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
     }
 
     initializeApplication();
