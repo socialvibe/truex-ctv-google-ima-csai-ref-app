@@ -1,5 +1,0 @@
-<resources>
-  <drawable name="splash_screen">@drawable/truex-splash</drawable>
-  <drawable name="app_logo">@mipmap/app_icon</drawable>
-  <color name="background">#FFFFFF</color>
-</resources>
