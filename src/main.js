@@ -8,7 +8,7 @@ import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
 import { LoadingSpinner } from "./components/loading-spinner";
 import { v4 as uuid } from 'uuid';
 import videoStreams from "./data/video-streams.json";
-import splashImage from "./assets/truex-splash.png";
+import homeBackgroundPath from "./assets/home-page-background.png";
 
 /**
  * Main app constructor for demonstrating the of the IMA SDK for client side ad insertion.
@@ -293,7 +293,7 @@ export function main(videoControllerClass) {
         const homeBackground = new Image();
         homeBackground.addEventListener('load', hideSplashScreen);
         homeBackground.addEventListener('error', hideSplashScreen);
-        homeBackground.src = splashImage;
+        homeBackground.src = homeBackgroundPath;
     }
 
     function hideSplashScreen() {
