@@ -281,6 +281,7 @@ export function main(videoControllerClass) {
             window.addEventListener("popstate", onBackAction);
 
             // Hide the splash page until the home page is ready.
+            // NOTE: we skip the local wait if we have a native splash screen in the host app.
             const splashTimeout = window.hostApp && window.hostApp.hideSplashScreen ? 0 : 2000;
             setTimeout(hideSplashScreenWhenLoaded, splashTimeout);
         } catch (err) {
