@@ -280,7 +280,7 @@ export function main(videoControllerClass) {
             pushBackActionBlock(); // push a back action block
             window.addEventListener("popstate", onBackAction);
 
-            // Hide the splash page when the home page is ready.
+            // Hide the splash page until the home page is ready.
             const splashTimeout = window.hostApp && window.hostApp.hideSplashScreen ? 0 : 2000;
             setTimeout(hideSplashScreenWhenLoaded, splashTimeout);
         } catch (err) {
