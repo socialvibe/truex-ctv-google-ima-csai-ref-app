@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.Settings.Secure
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager.LayoutParams
 import android.webkit.JavascriptInterface
@@ -46,7 +47,7 @@ class MainActivity : Activity() {
 
         webView.scrollBarStyle = View.SCROLLBARS_OUTSIDE_OVERLAY
         webView.isScrollbarFadingEnabled = false
-        webView.addJavascriptInterface(this, "fireTvApp");
+        webView.addJavascriptInterface(this, "hostApp");
 
         // Enable chrome://inspect debugging in debug builds
         WebView.setWebContentsDebuggingEnabled(true)
@@ -57,6 +58,15 @@ class MainActivity : Activity() {
 
         val appUrl = getString(R.string.app_url);
         webView.loadUrl(appUrl)
+    }
+
+    @JavascriptInterface
+    fun hideSplashScreen() {
+        var mainLayout : ViewGroup = findViewById(R.id.mainLayout)
+        var splashScreen : View = findViewById(R.id.appSplash)
+        if (splashScreen != null && splashScreen.parent != null) {
+            mainLayout.removeView(splashScreen)
+        }
     }
 
     @JavascriptInterface
