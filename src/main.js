@@ -282,7 +282,8 @@ export function main(videoControllerClass) {
 
             // Hide the splash page until the home page is ready.
             // NOTE: we skip the local wait if we have a native splash screen in the host app.
-            const splashTimeout = window.hostApp && window.hostApp.hideSplashScreen ? 0 : 2000;
+            const hasNativeSplashScreen = platform.isFireTV || platform.isAndroidTV;
+            const splashTimeout = hasNativeSplashScreen ? 0 : 2000;
             setTimeout(hideSplashScreenWhenLoaded, splashTimeout);
         } catch (err) {
             console.error('initialization error: ' + platform.describeErrorWithStack(err));
