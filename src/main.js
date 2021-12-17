@@ -281,7 +281,7 @@ export function main(videoControllerClass) {
             window.addEventListener("popstate", onBackAction);
 
             // Hide the splash page when the home page is ready.
-            setTimeout(hideSplashScreenWhenLoaded, 500);
+            setTimeout(hideSplashScreenWhenLoaded, 2000);
         } catch (err) {
             console.error('initialization error: ' + platform.describeErrorWithStack(err));
             hideSplashScreen();
