@@ -1,6 +1,6 @@
 {
     "name": "TruexRefApp_IMA_CSAI",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "description": "Sample app to demonstrate how to integrate Google IMA using Client-Side Ad Insertion with true[X]'s CTV Web ad renderer",
     "main": "index.js",
     "public": true,
