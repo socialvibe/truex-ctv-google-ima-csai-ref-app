@@ -8,6 +8,7 @@ import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
 import { LoadingSpinner } from "./components/loading-spinner";
 import { v4 as uuid } from 'uuid';
 import videoStreams from "./data/video-streams.json";
+import homeBackgroundPath from "./assets/home-page-background.png";
 
 /**
  * Main app constructor for demonstrating the of the IMA SDK for client side ad insertion.
@@ -278,9 +279,33 @@ export function main(videoControllerClass) {
             // for LG see https://webostv.developer.lge.com/develop/app-developer-guide/back-button/
             pushBackActionBlock(); // push a back action block
             window.addEventListener("popstate", onBackAction);
+
+            // Hide the splash page until the home page is ready.
+            // NOTE: we skip the local wait if we have a native splash screen in the host app.
+            const hasNativeSplashScreen = platform.isFireTV || platform.isAndroidTV
+                || platform.isLG || platform.isConsole;
+            const splashTimeout = hasNativeSplashScreen ? 0 : 2000;
+            setTimeout(hideSplashScreenWhenLoaded, splashTimeout);
         } catch (err) {
             console.error('initialization error: ' + platform.describeErrorWithStack(err));
+            hideSplashScreen();
             setTimeout(() => debugLog.show(), 0);
+        }
+    }
+
+    function hideSplashScreenWhenLoaded() {
+        const homeBackground = new Image();
+        homeBackground.addEventListener('load', hideSplashScreen);
+        homeBackground.addEventListener('error', hideSplashScreen);
+        homeBackground.src = homeBackgroundPath;
+    }
+
+    function hideSplashScreen() {
+        const splash = document.querySelector('.splash-page');
+        if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+        const hostApp = window.hostApp;
+        if (hostApp && hostApp.hideSplashScreen) {
+            hostApp.hideSplashScreen();
         }
     }
 
