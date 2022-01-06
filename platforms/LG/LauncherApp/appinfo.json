@@ -9,6 +9,6 @@
     "title": "TruexRefApp_IMA_CSAI",
     "appDescription": "Platform specific native web app container for true[X] reference app",
     "type": "web",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "iconColor": "#ffffff"
 }
