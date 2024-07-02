@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## v1.7.1
+## v1.7.2
 migrate to fastly CDN for ctv.truex.com
 
 ## v1.7.1

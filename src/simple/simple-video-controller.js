@@ -7,7 +7,6 @@ import pauseSvg from '../assets/pause-button.svg';
 import { InteractiveAd } from "../components/interactive-ad";
 
 import vastAdPlaylist from '../data/sample-ad-playlist.xml';
-//import vastAdPlaylist from '../data/AnE-sample-vst-response.xml';
 
 /**
  * Presents a video controller that demonstrates the "simple" use of the client-side ad insertion IMA SDK
