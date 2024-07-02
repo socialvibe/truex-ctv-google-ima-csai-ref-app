@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## v1.7.1
+migrate to fastly CDN for ctv.truex.com
+
+## v1.7.1
 * set cache-control header on all uploaded files
 
 ## v1.7.0

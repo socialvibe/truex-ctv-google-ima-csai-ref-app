@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
+import { TruexAdRenderer } from '@truex/ad-renderer';
 
 // Exercises the True[X] Ad Renderer for interactive ads.
 // NOTE: this is the main integration point for display interactive ads via the true[X] SDK.

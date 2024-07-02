@@ -4,7 +4,7 @@ import { DebugLog } from 'truex-shared/components/debug-log';
 import { inputActions } from 'truex-shared/focus_manager/txm_input_actions';
 import { Focusable } from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
-import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
+import { TruexAdRenderer } from '@truex/ad-renderer';
 import { LoadingSpinner } from "./components/loading-spinner";
 import { v4 as uuid } from 'uuid';
 import videoStreams from "./data/video-streams.json";
