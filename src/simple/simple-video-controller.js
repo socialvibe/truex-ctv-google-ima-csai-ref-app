@@ -303,8 +303,9 @@ export class SimpleVideoController {
                 this.currentAdProgress = event.getAdData();
                 if (canSkip && this.isShowingTruexAd()) {
                     // Progressing thru the placeholder video means we should be done with it.
-                    console.log(`ad progress: ${ad?.getAdId()} canSkip: ${canSkip} progress: ${this.currentAdProgress?.currentTime || 0}`);
-                    this.adsManager.skip();
+                    // Skip no longer works as of Dev 2023, version 3.607.0
+                    // See: https://groups.google.com/g/ima-sdk/c/ky-Q_pUXrIA
+                    //this.adsManager.skip();
                 }
                 this.refresh();
                 break;
@@ -476,12 +477,12 @@ export class SimpleVideoController {
     }
 
     stepVideo(forward) {
-        if (this.currentAd) {
-            // Don't allow user seeking during ad playback
-            // Just show the control bar so the user can see the timeline.
-            this.showControlBar();
-            return;
-        }
+        // if (this.currentAd) {
+        //     // Don't allow user seeking during ad playback
+        //     // Just show the control bar so the user can see the timeline.
+        //     this.showControlBar();
+        //     return;
+        // }
 
         if (!this.video) return; // user stepping should only happen on an active video
         const currTime = this.currVideoTime;
@@ -543,7 +544,7 @@ export class SimpleVideoController {
 
         } else {
             // Interpret as a seek.
-            if (this.currentAd) return;  // Don't allow user seeking during ad playback
+            //if (this.currentAd) return;  // Don't allow user seeking during ad playback
             const timelineX = Math.max(0, mouseX - timelineBounds.left);
             const timelineRatio = timelineX / timelineBounds.width;
             const videoDuration = this.getVideoDuration();
@@ -563,7 +564,10 @@ export class SimpleVideoController {
     resumeAdPlayback() {
         if (this.adsManager) {
             if (this.isShowingTruexAd()) {
-                this.adsManager.skip();
+                // Skip no longer works as of Dev 2023, version 3.607.0
+                // See: https://groups.google.com/g/ima-sdk/c/ky-Q_pUXrIA
+                //this.adsManager.skip();
+                // See the adVideo seek below as a work around
             }
             console.log("resumed ad playback");
             this.showPlayer(true);
@@ -622,6 +626,14 @@ export class SimpleVideoController {
         this.showLoadingSpinner(true);
         this.hideControlBar();
         this.pause();
+
+        // Skip no longer works as of Dev 2023, version 3.607.0
+        // See: https://groups.google.com/g/ima-sdk/c/ky-Q_pUXrIA
+        // As such, we try to force the skip directly on the underlying ad video player as a work around.
+        var adVideo = this.adUI.querySelector('video');
+        if (adVideo && adVideo.duration > 0) {
+            adVideo.currentTime = adVideo.duration;
+        }
 
         // Start an interactive ad.
         const interactiveAd = new InteractiveAd(vastConfigUrl, this);
