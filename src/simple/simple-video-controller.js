@@ -565,12 +565,12 @@ export class SimpleVideoController {
 
     resumeAdPlayback() {
         if (this.adsManager) {
-            if (this.isShowingTruexAd()) {
-                // NOTE: Skip no longer works as of Dev 2023, version 3.607.0
-                // See: https://groups.google.com/g/ima-sdk/c/ky-Q_pUXrIA
-                //this.adsManager.skip();
-                // See the adVideo seek below as a work around
-            }
+            // NOTE: Skip no longer works as of Dev 2023, version 3.607.0
+            // See: https://groups.google.com/g/ima-sdk/c/ky-Q_pUXrIA
+            // See the adVideo seek below as a work around
+            // if (this.isShowingTruexAd()) {
+            //     this.adsManager.skip();
+            // }
             console.log("resumed ad playback");
             this.showPlayer(true);
             this.showAdContainer(true);
