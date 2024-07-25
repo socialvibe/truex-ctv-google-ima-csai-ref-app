@@ -11,7 +11,7 @@
               <AdTitle>TrueX Interactive Preroll</AdTitle>
               <Creatives>
                 <Creative id="truex-preroll" sequence="1">
-                  <Linear skipoffset="00:00:00.01">
+                  <Linear>
                     <Duration>00:00:30</Duration>
                     <AdParameters>
                       <![CDATA[ {"vast_config_url":"get.truex.com/72904fe382372efcdcea6314aa1d7a37db6051b9/vast/config?dimension_1=sample-video&dimension_2=0&dimension_3=sample-video&dimension_4=1234&dimension_5=evergreen&stream_position=preroll&stream_id=#{stream-id}&network_user_id=#{user-id}"}]]>
@@ -57,7 +57,7 @@
               <AdTitle>TrueX Interactive Midroll</AdTitle>
               <Creatives>
                 <Creative id="truex-midroll" sequence="1">
-                  <Linear skipoffset="00:00:00.01">
+                  <Linear>
                     <Duration>00:00:30</Duration>
                     <AdParameters>
                       <![CDATA[ {"vast_config_url":"get.truex.com/72904fe382372efcdcea6314aa1d7a37db6051b9/vast/config?dimension_1=sample-video&dimension_2=1&dimension_3=sample-video&dimension_4=5678&dimension_5=evergreen&stream_position=midroll&stream_id=#{stream-id}&network_user_id=#{user-id}"}]]>
