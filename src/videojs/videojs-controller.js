@@ -227,7 +227,7 @@ export class VideoJSController {
         const canSkip = this.adsManager.getAdSkippableState();
         switch (event.type) {
             case google.ima.AdEvent.Type.LOADED:
-                console.log('ad loaded: ' + ad.getAdId() + ' canSkip: ' + canSkip + ' duration: ' + ad.getDuration()
+                console.log('ad loaded: ' + ad.getAdId() + ' duration: ' + ad.getDuration()
                     + ' pod: ' + ad.getAdPodInfo().getPodIndex());
                 if (!this.adBreakTimes) {
                     this.adBreakTimes = this.adsManager.getCuePoints();
@@ -238,7 +238,7 @@ export class VideoJSController {
                 break;
 
             case google.ima.AdEvent.Type.STARTED:
-                console.log('ad started: ' + ad.getAdId() + ' canSkip: ' + canSkip + ' duration: ' + ad.getDuration()
+                console.log('ad started: ' + ad.getAdId() + ' duration: ' + ad.getDuration()
                     + ' pod: ' + ad.getAdPodInfo().getPodIndex());
                 this.currentAd = ad;
                 this.currentAdProgress = null;
@@ -251,16 +251,18 @@ export class VideoJSController {
                 break;
 
             case google.ima.AdEvent.Type.SKIPPED:
-                console.log("ad skipped: canSkip: " + canSkip);
+                console.log('ad skipped: ' + ad?.getAdId());
 
             case google.ima.AdEvent.Type.AD_PROGRESS:
                 this.currentAdProgress = event.getAdData();
-                if (canSkip && this.isShowingTruexAd()) {
-                    // Progressing thru the placeholder video means we should be done with it.
-                    // Skip no longer works as of Dev 2023, version 3.607.0
-                    // See: https://groups.google.com/g/ima-sdk/c/ky-Q_pUXrIA
-                    //this.adsManager.skip();
-                }
+
+                // Progressing thru the placeholder video means we should be done with it.
+                // NOTE: Skip no longer works as of Dev 2023, version 3.607.0
+                // See: https://groups.google.com/g/ima-sdk/c/ky-Q_pUXrIA
+                // if (canSkip && this.isShowingTruexAd()) {
+                //     this.adsManager.skip();
+                // }
+
                 this.refresh();
                 break;
 
@@ -502,7 +504,7 @@ export class VideoJSController {
         if (this.adsManager) {
             if (this.isShowingTruexAd()) {
                 // Skip over the truex placeholder ad.
-                // Skip no longer works as of Dev 2023, version 3.607.0
+                // NOTE: Skip no longer works as of Dev 2023, version 3.607.0
                 // See: https://groups.google.com/g/ima-sdk/c/ky-Q_pUXrIA
                 //this.adsManager.skip();
                 // See the adVideo seek below as a work around
@@ -558,7 +560,7 @@ export class VideoJSController {
         this.hideControlBar();
         this.pause();
 
-        // Skip no longer works as of Dev 2023, version 3.607.0
+        // NOTE: Skip no longer works as of Dev 2023, version 3.607.0
         // See: https://groups.google.com/g/ima-sdk/c/ky-Q_pUXrIA
         // As such, we try to force the skip directly on the underlying ad video player as a work around.
         var adVideo = this.videoOwner.querySelector('.ima-ad-container video');
