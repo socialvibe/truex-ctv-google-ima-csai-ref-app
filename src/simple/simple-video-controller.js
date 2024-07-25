@@ -565,6 +565,7 @@ export class SimpleVideoController {
 
     resumeAdPlayback() {
         if (this.adsManager) {
+            // Skip over the truex placeholder ad.
             // NOTE: Skip no longer works as of Dev 2023, version 3.607.0
             // See: https://groups.google.com/g/ima-sdk/c/ky-Q_pUXrIA
             // See the adVideo seek below as a work around
