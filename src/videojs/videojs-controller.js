@@ -179,6 +179,7 @@ export class VideoJSController {
             this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, this.onAdEvent);
             this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, this.onAdEvent);
             this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, this.onAdEvent);
+            this.adsManager.addEventListener(google.ima.AdEvent.Type.SKIPPED, this.onAdEvent);
             this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, this.onAdEvent);
             this.adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, this.onAdEvent);
 
@@ -222,10 +223,11 @@ export class VideoJSController {
     onAdEvent(event) {
         // Retrieve the ad from the event. Some events (e.g. ALL_ADS_COMPLETED)
         // don't have ad object associated.
-        const ad = event.getAd();
+        const ad = event.getAd() || this.currentAd;
+        const canSkip = this.adsManager.getAdSkippableState();
         switch (event.type) {
             case google.ima.AdEvent.Type.LOADED:
-                console.log("ad loaded: " + ad.getAdId() + ' duration: ' + ad.getDuration()
+                console.log('ad loaded: ' + ad.getAdId() + ' canSkip: ' + canSkip + ' duration: ' + ad.getDuration()
                     + ' pod: ' + ad.getAdPodInfo().getPodIndex());
                 if (!this.adBreakTimes) {
                     this.adBreakTimes = this.adsManager.getCuePoints();
@@ -236,7 +238,7 @@ export class VideoJSController {
                 break;
 
             case google.ima.AdEvent.Type.STARTED:
-                console.log("ad started: " + ad.getAdId() + ' duration: ' + ad.getDuration()
+                console.log('ad started: ' + ad.getAdId() + ' canSkip: ' + canSkip + ' duration: ' + ad.getDuration()
                     + ' pod: ' + ad.getAdPodInfo().getPodIndex());
                 this.currentAd = ad;
                 this.currentAdProgress = null;
@@ -248,8 +250,16 @@ export class VideoJSController {
                 this.startInteractiveAd();
                 break;
 
+            case google.ima.AdEvent.Type.SKIPPED:
+                console.log("ad skipped: canSkip: " + canSkip);
+
             case google.ima.AdEvent.Type.AD_PROGRESS:
                 this.currentAdProgress = event.getAdData();
+                if (canSkip && this.isShowingTruexAd()) {
+                    // Progressing thru the placeholder video means we should be done with it.
+                    console.log(`ad progress: ${ad?.getAdId()} canSkip: ${canSkip} progress: ${this.currentAdProgress?.currentTime || 0}`);
+                    this.adsManager.skip();
+                }
                 this.refresh();
                 break;
 
