@@ -479,12 +479,12 @@ export class SimpleVideoController {
     }
 
     stepVideo(forward) {
-        // if (this.currentAd) {
-        //     // Don't allow user seeking during ad playback
-        //     // Just show the control bar so the user can see the timeline.
-        //     this.showControlBar();
-        //     return;
-        // }
+        if (this.currentAd) {
+            // Don't allow user seeking during ad playback
+            // Just show the control bar so the user can see the timeline.
+            this.showControlBar();
+            return;
+        }
 
         if (!this.video) return; // user stepping should only happen on an active video
         const currTime = this.currVideoTime;
@@ -546,7 +546,7 @@ export class SimpleVideoController {
 
         } else {
             // Interpret as a seek.
-            //if (this.currentAd) return;  // Don't allow user seeking during ad playback
+            if (this.currentAd) return;  // Don't allow user seeking during ad playback
             const timelineX = Math.max(0, mouseX - timelineBounds.left);
             const timelineRatio = timelineX / timelineBounds.width;
             const videoDuration = this.getVideoDuration();
