@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## v1.7.3
-work around decprecated adManager.skip() method
+work around deprecated adManager.skip() method
 
 ## v1.7.2
 migrate to fastly CDN for ctv.truex.com
