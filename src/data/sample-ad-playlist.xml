@@ -27,8 +27,8 @@
           </Ad>
           <Ad id="idvx-preroll" sequence="2">
             <InLine>
-              <AdSystem>trueX</AdSystem>
-              <AdTitle>IDVx Ad - Enfamil</AdTitle>
+              <AdSystem>IDVx</AdSystem>
+              <AdTitle>Enfamil</AdTitle>
               <Creatives>
                 <Creative id="idvx-preroll" sequence="2">
                   <Linear>
@@ -110,8 +110,8 @@
           </Ad>
           <Ad id="idvx-preroll" sequence="3">
             <InLine>
-              <AdSystem>trueX</AdSystem>
-              <AdTitle>IDVx Ad - Enfamil</AdTitle>
+              <AdSystem>IDVx</AdSystem>
+              <AdTitle>Enfamil</AdTitle>
               <Creatives>
                 <Creative id="idvx-preroll" sequence="3">
                   <Linear>

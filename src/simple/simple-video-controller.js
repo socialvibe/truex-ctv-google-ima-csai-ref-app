@@ -593,7 +593,7 @@ export class SimpleVideoController {
 
     isShowingIDVxAd() {
         const ad = this.currentAd;
-        return ad && ad.getTitle().startsWith('IDVx Ad');
+        return ad && ad.getAdSystem() == 'IDVx';
     }
 
     // Implements a key true[X] integration point, i.e. how to recognize a true[X] ad in the ad feed.
