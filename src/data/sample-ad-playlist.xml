@@ -25,17 +25,37 @@
               </Creatives>
             </InLine>
           </Ad>
-          <Ad id="coffee-preroll" sequence="2">
+          <Ad id="idvx-preroll" sequence="2">
+            <InLine>
+              <AdSystem>trueX</AdSystem>
+              <AdTitle>IDVx Ad - Enfamil</AdTitle>
+              <Creatives>
+                <Creative id="idvx-preroll" sequence="2">
+                  <Linear>
+                    <Duration>00:00:30</Duration>
+                    <AdParameters>
+                      <![CDATA[ {"vast_config_url":"https://qa-get.truex.com/fbb70482f4c0ded740f911686d1b9a01a2dd19c9/vast/config?stream_position=preroll&stream_id=#{stream-id}&network_user_id=#{user-id}"}]]>
+                    </AdParameters>
+                    <MediaFiles>
+                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
+                    </MediaFiles>
+                  </Linear>
+                </Creative>
+              </Creatives>
+            </InLine>
+          </Ad>
+          <Ad id="airline-preroll" sequence="3">
             <InLine>
               <AdSystem>GDFP</AdSystem>
-              <AdTitle>Coffee Preroll</AdTitle>
+              <AdTitle>Airline Preroll</AdTitle>
               <Creatives>
-                <Creative id="coffee-preroll" sequence="2">
+                <Creative id="airline-preroll" sequence="3">
                   <Linear>
                     <Duration>00:00:30</Duration>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://ctv.truex.com/assets/coffee-720p.mp4]]></MediaFile>
+                        <![CDATA[https://ctv.truex.com/assets/airline-720p.mp4]]></MediaFile>
                     </MediaFiles>
                   </Linear>
                 </Creative>
@@ -74,31 +94,34 @@
           <Ad id="airline-midroll" sequence="2">
             <InLine>
               <AdSystem>GDFP</AdSystem>
-              <AdTitle>Airline Midroll</AdTitle>
+              <AdTitle>Coffee Preroll</AdTitle>
               <Creatives>
-                <Creative id="airline-midroll" sequence="2">
+                <Creative id="coffee-preroll" sequence="2">
                   <Linear>
                     <Duration>00:00:30</Duration>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://ctv.truex.com/assets/airline-720p.mp4]]></MediaFile>
+                        <![CDATA[https://ctv.truex.com/assets/coffee-720p.mp4]]></MediaFile>
                     </MediaFiles>
                   </Linear>
                 </Creative>
               </Creatives>
             </InLine>
           </Ad>
-          <Ad id="pets-midroll" sequence="3">
+          <Ad id="idvx-preroll" sequence="3">
             <InLine>
-              <AdSystem>GDFP</AdSystem>
-              <AdTitle>Pets Midroll</AdTitle>
+              <AdSystem>trueX</AdSystem>
+              <AdTitle>IDVx Ad - Enfamil</AdTitle>
               <Creatives>
-                <Creative id="pets-midroll" sequence="3">
+                <Creative id="idvx-preroll" sequence="3">
                   <Linear>
                     <Duration>00:00:30</Duration>
+                    <AdParameters>
+                      <![CDATA[ {"vast_config_url":"https://qa-get.truex.com/fbb70482f4c0ded740f911686d1b9a01a2dd19c9/vast/config?stream_position=preroll&stream_id=#{stream-id}&network_user_id=#{user-id}"}]]>
+                    </AdParameters>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://ctv.truex.com/assets/petcare-720p.mp4]]></MediaFile>
+                        <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
                     </MediaFiles>
                   </Linear>
                 </Creative>

@@ -591,12 +591,17 @@ export class SimpleVideoController {
         return ad && ad.getAdSystem() == 'trueX' && ad.getAdPodInfo().getAdPosition() == 1;
     }
 
+    isShowingIDVxAd() {
+        const ad = this.currentAd;
+        return ad && ad.getTitle().startsWith('IDVx Ad');
+    }
+
     // Implements a key true[X] integration point, i.e. how to recognize a true[X] ad in the ad feed.
     startInteractiveAd() {
         // For true[X] IMA integration, the first ad in an ad break points to the interactive ad,
         // everything else are the fallback ad videos, or else non-truex ad videos.
         // So anything not an interactive ad we just let play.
-        if (!this.isShowingTruexAd()) {
+        if (!this.isShowingTruexAd() && !this.isShowingIDVxAd()) {
             this.showAdContainer(true);
             this.showPlayer(true);
             if (this.adsManager) this.adsManager.resume();
@@ -621,7 +626,7 @@ export class SimpleVideoController {
         vastConfigUrl = vastConfigUrl.replace('#{stream-id}', this.videoStream.id);
         vastConfigUrl = vastConfigUrl.replace('#{user-id}', this.currentUserId);
 
-        console.log(`truex ad started at ${timeLabelOf(adPod.getTimeOffset())}:\n${vastConfigUrl}`);
+        console.log(`truex or idvx ad started at ${timeLabelOf(adPod.getTimeOffset())}:\n${vastConfigUrl}`);
 
         // Ensure the entire player is no longer visible.
         this.showAdContainer(false);
