@@ -586,29 +586,22 @@ export class SimpleVideoController {
         };
     }
 
-    isShowingTruexAd() {
-        const ad = this.currentAd;
-        return ad && ad.getAdSystem() == 'trueX' && ad.getAdPodInfo().getAdPosition() == 1;
-    }
-
-    isShowingIDVxAd() {
-        const ad = this.currentAd;
-        return ad && ad.getAdSystem() == 'IDVx';
-    }
-
     // Implements a key true[X] integration point, i.e. how to recognize a true[X] ad in the ad feed.
     startInteractiveAd() {
         // For true[X] IMA integration, the first ad in an ad break points to the interactive ad,
         // everything else are the fallback ad videos, or else non-truex ad videos.
         // So anything not an interactive ad we just let play.
-        if (!this.isShowingTruexAd() && !this.isShowingIDVxAd()) {
+        const ad = this.currentAd;
+        const isTruexAd = ad && ad.getAdSystem() == 'trueX' && ad.getAdPodInfo().getAdPosition() == 1;
+        const isIDVxAd = ad && ad.getAdSystem() == 'IDVx';
+
+        if (!isTruexAd && !isIDVxAd) {
             this.showAdContainer(true);
             this.showPlayer(true);
             if (this.adsManager) this.adsManager.resume();
             return;
         }
 
-        const ad = this.currentAd;
         const adPod = ad.getAdPodInfo();
 
         const adParams = JSON.parse(ad.getTraffickingParametersString());
