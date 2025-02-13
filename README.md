@@ -1,12 +1,28 @@
 # Overview
 
-For an initial introduction on how to integrate the true[X] SDK into a web application, please refer to the [Getting Started](./GETTING_STARTED.md) guide.
+For an initial introduction on how to integrate the Infillion SDK into a web application, please refer to the [Getting Started](./GETTING_STARTED.md) guide.
 
-This project contains sample source code that demonstrates an example integration of true[X]'s CTV Web ad renderer with the Google Ad Manager, using the IMA SDK. This further exemplifies the needed logic to manage true[X] opt-in flows (choice cards) as fully stitched into the video stream, when true[X] ads are encountered in the ad feed. 
+This project contains sample source code that demonstrates an example integration of Infillion's CTV Web ad renderer with the Google Ad Manager, using the IMA SDK. This further exemplifies the needed logic to manage true[X] opt-in flows (choice cards) and IDVx ad playback as fully stitched into the video stream, when these ads are encountered in the ad feed. 
 
 Google IMA Documentation can be found [here|https://developers.google.com/interactive-media-ads].
 
-For a more detailed true[X] integration guide, please refer to the [CTV Web Integration documentation](https://github.com/socialvibe/truex-ctv-web-integration) on github.com.
+For a more detailed Infillion integration guide, please refer to the [CTV Web Integration documentation](https://github.com/socialvibe/truex-ctv-web-integration) on github.com.
+
+# Infillion Ad Types and Behavior
+  1. true[X]
+    - Always appears in position 1 of the ad pod
+    - Identified by ad system name 'trueX'
+    - Presents an interactive choice card to viewers
+    - If viewer engages: Skips remaining ads in pod
+    - If viewer declines: Plays fallback ads uninterrupted
+    - Note: Fallback sequence may include IDVx ads
+
+  2. IDVx
+    - Can appear in any position within the ad pod
+    - Identified by ad system name 'IDVx'
+    - Plays automatically without viewer interaction
+    - Seamlessly integrates with third-party ads
+    - Forms part of continuous ad sequence
 
 # Implementation Details
 
@@ -15,24 +31,28 @@ In this project we exercise the integration with the Google Ad server via the [H
 The bulk of the code represents a more or less canonical media app that breaks down as follows:
 * [index.html](./src/index.html), [main.js](./src/main.js): main application page and app logic, presenting "typical" landing content playback pages.
 * video controller classes, i.e. [simple-video-controller.js](./src/simple/simple-video-controller.js) and [videojs-controller.js](./src/videojs/videojs-controller.js): player controller for play/pause/seek support, and ad feed integration and ad playback.
-  * A key true[X] integration point is in the `startInterativeAd()` method, which decides when a true[X] ad is recognized in the ad feed, and thus to either display it or fallback to the regular ad videos in the ad break.
-* [interactive-ad.js](./src/components/interactive-ad.js): true[X] ad component, creates and starts the `TruexAdRenderer` instance to display the true[X] interactive ad.
-  * This is the main integration point to the true[X] SDK.
-  * When the true[X] ad completes, one either skips the ad break to resumne content playback (via `videoController.skipAdBreak()`) or fallback to playing the remaining ad videos in the ad break (via `videoController.resumeAdPlayback()`), depending on whether or not the user earned the the "interaction credit" within the true[X] ad.
+  * A key integration point is in the `startInterativeAd()` method, which decides when a true[X] or IDVx ad is recognized in the ad feed. For true[X] ads, it determines whether to display the interactive experience or fallback to regular ad videos. For IDVx ads, it ensures seamless integration with other ads in the sequence.
+* [interactive-ad.js](./src/components/interactive-ad.js): Infillion ad component, creates and starts the `TruexAdRenderer` instance to display the true[X] or IDVx interactive ad.
+  * This is the main integration point to the Infillion SDK.
+  * When a true[X] ad completes, one either skips the ad break to resume content playback (via `videoController.skipAdBreak()`) or fallback to playing the remaining ad videos in the ad break (via `videoController.resumeAdPlayback()`), depending on whether or not the user earned the "interaction credit" within the true[X] ad.
+  * When an IDVx ad completes, we play the remaining ad videos in the ad break (via `videoController.resumeAdPlayback()`)
 
-The main video is defined by the [video-streams.json](./src/data/video-streams.json) file. The ads are canned, and are defined in the [sample-ad-playlist.xml](./src/data/sample-ad-playlist.xml) file. In this sample application, a preroll and a midroll ad breaks are defined.
+The main video is defined by the [video-streams.json](./src/data/video-streams.json) file. The ads are canned, and are defined in the [sample-ad-playlist.xml](./src/data/sample-ad-playlist.xml) file. In this sample application, a preroll and a midroll ad breaks are defined, which can contain both true[X] and IDVx ads (distingueshed by the AdSystem type).
 
-Two versions are the app are demonstrated in this code base, a "simple" integration to the pure IMA SDK, integrating to our own HTML5 video element, with app specific video controls. This app's entry point is defined in the [simple.js](./src/simple/simple.js) file, with the core IMA SDK integration implemented in [simple-video-controller.js](./src/simple/simple-video-controller.js). The simple app version is hosted [here with the index.html entry point](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html).
+Two versions of the app are demonstrated in this code base:
+1. A "simple" integration to the pure IMA SDK, integrating to our own HTML5 video element, with app specific video controls. This app's entry point is defined in the [simple.js](./src/simple/simple.js) file, with the core IMA SDK integration implemented in [simple-video-controller.js](./src/simple/simple-video-controller.js). The simple app version is hosted [here with the index.html entry point](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/index.html).
 
-A higher level integration to the IMA SDK using the popular [videojs package](https://www.npmjs.com/package/videojs) is demonstrated with the [videojs-demo.js](src/videojs/videojs-demo.js) app file, with the videojs/IMA integration implemented in [videojs-controller.js](src/videojs/videojs-controller.js). The integrated app version is hosted [here with the integrated.html entry point](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/videojs-demo.html).
+2. A higher level integration to the IMA SDK using the popular [videojs package](https://www.npmjs.com/package/videojs) is demonstrated with the [videojs-demo.js](src/videojs/videojs-demo.js) app file, with the videojs/IMA integration implemented in [videojs-controller.js](src/videojs/videojs-controller.js). The integrated app version is hosted [here with the integrated.html entry point](https://ctv.truex.com/web/ref-app-IMA-CSAI/master/videojs-demo.html).
 
 For both apps, the same [index.html](./src/index.html) main page is used.
 
-In order to start playing a video, video stream objects are given to the `startVideo` method of the app's video controller instance. In the `onAdEvent` method, various ad events are fielded, the key one being `AdEvent.Type.STARTED`. There the app determines in the `startInteractiveAd()` method if a true[X] ad is present vs a regular video ad. If so, the an `InteractiveAd` instance is created to display it. If not, IMA adsManager instance continues to play the non-true[X] ad video. 
+In order to start playing a video, video stream objects are given to the `startVideo` method of the app's video controller instance. In the `onAdEvent` method, various ad events are fielded, the key one being `AdEvent.Type.STARTED`. There the app determines in the `startInteractiveAd()` method if an Infillion (true[X] or IDVx) ad is present vs a regular video ad. For Infillion ads, an `InteractiveAd` instance is created to display it. For regular video ads, the IMA adsManager instance continues to play them as normal.
 
 To display a true[X] ad, a new `InteractiveAd` instance (from [interactive-ad.js](./src/components/interactive-ad.js)) is created with vast config url extracted from the ad instance's tag parameters. Upon calling the interactive ad's `start` method, a `TruexAdRenderer` instance (i.e. `tar`) is created to render and overlay the choice card and ultimately the engagement ad over top of the playback page. If the user skips the interaction, the ad fallback video is played instead, or else the main video is cancelled entirely if the user backs out of the ad completely.
 
-The `tar` integration flow is described in the `start` method, with the key responsibilities for the host application developer being showing the the `handleAdEvent` method, which fields ad events to track the state of ad changes, until the ad is ultimately completed or cancelled, tracking in particular whether the viewer interacted enough with the ad to earn a free pod skip to continue with the main video, or else fallback to playing the ad videos instead.
+An IDVx ad will follow a similar path but no choice card will be shown. Once the IDVx ad is over, the `TruexAdRenderer` UI will disappear and we'll resume the player with the rest of the video ads.
+
+The `tar` integration flow is described in the `start` method, with the key responsibilities for the host application developer being showing the the `handleAdEvent` method.
 
 # Build/Develop/Deploy
 
