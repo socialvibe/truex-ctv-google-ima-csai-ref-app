@@ -5,7 +5,7 @@
       <vmap:VASTAdData>
         <VAST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd"
             version="3.0">
-          <!-- This is the trueX value exchange ad, <AdSystem> MUST be trueX -->
+          <!-- This is the trueX value exchange ad, <AdSystem> MUST be trueX, it must always be in position 1 -->
           <Ad id="truex-preroll" sequence="1">
             <InLine>
               <AdSystem>trueX</AdSystem>
