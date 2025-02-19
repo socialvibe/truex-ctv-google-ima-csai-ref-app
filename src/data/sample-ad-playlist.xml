@@ -10,13 +10,14 @@
             <InLine>
               <AdSystem>trueX</AdSystem>
               <AdTitle>TrueX Interactive Preroll</AdTitle>
+              <Impression></Impression>
+              <Description>
+                <![CDATA[get.truex.com/72904fe382372efcdcea6314aa1d7a37db6051b9/vast/config?dimension_1=sample-video&dimension_2=0&dimension_3=sample-video&dimension_4=1234&dimension_5=evergreen&stream_position=preroll&stream_id=#{stream-id}&network_user_id=#{user-id}]]>
+              </Description>
               <Creatives>
                 <Creative id="truex-preroll" sequence="1">
                   <Linear>
                     <Duration>00:00:30</Duration>
-                    <AdParameters>
-                      <![CDATA[ {"vast_config_url":"get.truex.com/72904fe382372efcdcea6314aa1d7a37db6051b9/vast/config?dimension_1=sample-video&dimension_2=0&dimension_3=sample-video&dimension_4=1234&dimension_5=evergreen&stream_position=preroll&stream_id=#{stream-id}&network_user_id=#{user-id}"}]]>
-                    </AdParameters>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
                         <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
@@ -31,13 +32,14 @@
             <InLine>
               <AdSystem>IDVx</AdSystem>
               <AdTitle>Enfamil</AdTitle>
+              <Impression></Impression>
+              <Description>
+                <![CDATA[https://qa-get.truex.com/fbb70482f4c0ded740f911686d1b9a01a2dd19c9/vast/config?stream_position=preroll&stream_id=#{stream-id}&network_user_id=#{user-id}]]>
+              </Description>
               <Creatives>
                 <Creative id="idvx-preroll" sequence="2">
                   <Linear>
                     <Duration>00:00:30</Duration>
-                    <AdParameters>
-                      <![CDATA[ {"vast_config_url":"https://qa-get.truex.com/fbb70482f4c0ded740f911686d1b9a01a2dd19c9/vast/config?stream_position=preroll&stream_id=#{stream-id}&network_user_id=#{user-id}"}]]>
-                    </AdParameters>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
                         <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
@@ -51,6 +53,8 @@
             <InLine>
               <AdSystem>GDFP</AdSystem>
               <AdTitle>Airline Preroll</AdTitle>
+              <Impression></Impression>
+              <Description></Description>
               <Creatives>
                 <Creative id="airline-preroll" sequence="3">
                   <Linear>
@@ -77,13 +81,14 @@
             <InLine>
               <AdSystem>trueX</AdSystem>
               <AdTitle>TrueX Interactive Midroll</AdTitle>
+              <Impression></Impression>
+              <Description>
+                <![CDATA[get.truex.com/72904fe382372efcdcea6314aa1d7a37db6051b9/vast/config?dimension_1=sample-video&dimension_2=1&dimension_3=sample-video&dimension_4=5678&dimension_5=evergreen&stream_position=midroll&stream_id=#{stream-id}&network_user_id=#{user-id}]]>
+              </Description>
               <Creatives>
                 <Creative id="truex-midroll" sequence="1">
                   <Linear>
                     <Duration>00:00:30</Duration>
-                    <AdParameters>
-                      <![CDATA[ {"vast_config_url":"get.truex.com/72904fe382372efcdcea6314aa1d7a37db6051b9/vast/config?dimension_1=sample-video&dimension_2=1&dimension_3=sample-video&dimension_4=5678&dimension_5=evergreen&stream_position=midroll&stream_id=#{stream-id}&network_user_id=#{user-id}"}]]>
-                    </AdParameters>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
                         <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
@@ -97,6 +102,8 @@
             <InLine>
               <AdSystem>GDFP</AdSystem>
               <AdTitle>Coffee Preroll</AdTitle>
+              <Impression></Impression>
+              <Description></Description>
               <Creatives>
                 <Creative id="coffee-preroll" sequence="2">
                   <Linear>
@@ -114,13 +121,14 @@
             <InLine>
               <AdSystem>IDVx</AdSystem>
               <AdTitle>Enfamil</AdTitle>
+              <Impression></Impression>
+              <Description>
+                <![CDATA[https://qa-get.truex.com/fbb70482f4c0ded740f911686d1b9a01a2dd19c9/vast/config?stream_position=preroll&stream_id=#{stream-id}&network_user_id=#{user-id}" />]]>
+              </Description>
               <Creatives>
                 <Creative id="idvx-preroll" sequence="3">
                   <Linear>
                     <Duration>00:00:30</Duration>
-                    <AdParameters>
-                      <![CDATA[ {"vast_config_url":"https://qa-get.truex.com/fbb70482f4c0ded740f911686d1b9a01a2dd19c9/vast/config?stream_position=preroll&stream_id=#{stream-id}&network_user_id=#{user-id}"}]]>
-                    </AdParameters>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
                         <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
