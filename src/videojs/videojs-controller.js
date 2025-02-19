@@ -546,11 +546,7 @@ export class VideoJSController {
             return;
         }
         
-        const adPod = ad.getAdPodInfo();
-
-        const adParams = JSON.parse(ad.getTraffickingParametersString());
-        var vastConfigUrl = adParams && adParams.vast_config_url;
-        vastConfigUrl = vastConfigUrl && vastConfigUrl.trim();
+        var vastConfigUrl = ad.getDescription().trim();
         if (!vastConfigUrl) return;
         if (!vastConfigUrl.startsWith('http')) {
             vastConfigUrl = 'https://' + vastConfigUrl;
@@ -563,7 +559,8 @@ export class VideoJSController {
         vastConfigUrl = vastConfigUrl.replace('#{stream-id}', this.videoStream.id);
         vastConfigUrl = vastConfigUrl.replace('#{user-id}', this.currentUserId);
 
-        console.log(`truex ad started at ${timeLabelOf(adPod.getTimeOffset())}:\n${vastConfigUrl}`);
+        const adPod = ad.getAdPodInfo();
+        console.log(`truex or idvx ad started at ${timeLabelOf(adPod.getTimeOffset())}:\n${vastConfigUrl}`);
 
         // Ensure the entire player is no longer visible.
         this.showAdContainer(false);
