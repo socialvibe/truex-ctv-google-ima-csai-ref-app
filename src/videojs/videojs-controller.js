@@ -561,9 +561,9 @@ export class VideoJSController {
         }
 
         const rawParameters = ad.getTraffickingParametersString().trim();
-        const tarParams = rawParameters ? JSON.parse(rawParameters) : null;
+        const vastConfigJson = rawParameters ? JSON.parse(rawParameters) : null;
         
-        if (!vastConfigUrl && !tarParams) return;
+        if (!vastConfigUrl && !vastConfigJson) return;
 
         const adPod = ad.getAdPodInfo();
         console.log(`truex or idvx ad started at ${timeLabelOf(adPod.getTimeOffset())}`);
@@ -583,8 +583,8 @@ export class VideoJSController {
             adVideo.currentTime = adVideo.duration;
         }
 
-        // Start an interactive ad.
-        const interactiveAd = new InteractiveAd(vastConfigUrl || tarParams, this);
+        // Truex flow uses vast config url, iDVx flow uses vastConfigJson
+        const interactiveAd = new InteractiveAd(vastConfigUrl || vastConfigJson, this);
         interactiveAd.start();
 
         return true; // ad started
