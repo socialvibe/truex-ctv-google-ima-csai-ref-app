@@ -584,7 +584,7 @@ export class VideoJSController {
         }
 
         // Truex flow uses vast config url, iDVx flow uses vastConfigJson
-        const interactiveAd = new InteractiveAd(vastConfigUrl || vastConfigJson, this);
+        const interactiveAd = new InteractiveAd(vastConfigJson || vastConfigUrl, this);
         interactiveAd.start();
 
         return true; // ad started
