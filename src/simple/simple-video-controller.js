@@ -615,22 +615,28 @@ export class SimpleVideoController {
             if (this.adsManager) this.adsManager.resume();
             return;
         }
-
+        
         var vastConfigUrl = ad.getDescription().trim();
-        if (!vastConfigUrl) return;
-        if (!vastConfigUrl.startsWith('http')) {
-            vastConfigUrl = 'https://' + vastConfigUrl;
+        if (vastConfigUrl) {
+            if (!vastConfigUrl.startsWith('http')) {
+                vastConfigUrl = 'https://' + vastConfigUrl;
+            }
+            
+            // A real integration would have stream and user id macros already substituted in from the VAST server.
+            // We do it now to work around ad usage capping due to static ids.
+            // NOTE: this is needed only let ads be reliably available for demo purposes. A production version would
+            // use the vast config urls from the VAST descriptor as is.
+            vastConfigUrl = vastConfigUrl.replace('#{stream-id}', this.videoStream.id);
+            vastConfigUrl = vastConfigUrl.replace('#{user-id}', this.currentUserId);
         }
 
-        // A real integration would have stream and user id macros already substituted in from the VAST server.
-        // We do it now to work around ad usage capping due to static ids.
-        // NOTE: this is needed only let ads be reliably available for demo purposes. A production version would
-        // use the vast config urls from the VAST descriptor as is.
-        vastConfigUrl = vastConfigUrl.replace('#{stream-id}', this.videoStream.id);
-        vastConfigUrl = vastConfigUrl.replace('#{user-id}', this.currentUserId);
+        const rawParameters = ad.getTraffickingParametersString().trim();
+        const tarParams = rawParameters ? JSON.parse(rawParameters) : null;
+        
+        if (!vastConfigUrl && !tarParams) return;
 
         const adPod = ad.getAdPodInfo();
-        console.log(`truex or idvx ad started at ${timeLabelOf(adPod.getTimeOffset())}:\n${vastConfigUrl}`);
+        console.log(`truex or idvx ad started at ${timeLabelOf(adPod.getTimeOffset())}`);
 
         // Ensure the entire player is no longer visible.
         this.showAdContainer(false);
@@ -648,7 +654,7 @@ export class SimpleVideoController {
         }
 
         // Start an interactive ad.
-        const interactiveAd = new InteractiveAd(vastConfigUrl, this);
+        const interactiveAd = new InteractiveAd(vastConfigUrl || tarParams, this);
         interactiveAd.start();
 
         return true; // ad started
