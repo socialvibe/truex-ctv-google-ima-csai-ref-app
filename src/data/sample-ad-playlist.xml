@@ -29,23 +29,10 @@
           </Ad>
           <!-- This is the IDVx ad, <AdSystem> MUST be IDVx, the ad can apprear anywhere in the sequence -->
           <Ad id="idvx-preroll" sequence="2">
-            <InLine>
+            <Wrapper>
               <AdSystem>IDVx</AdSystem>
-              <AdTitle>Enfamil</AdTitle>
-              <Impression></Impression>
-              <Creatives>
-                <Creative id="idvx-preroll" sequence="2">
-                  <Linear>
-                    <Duration>00:00:30</Duration>
-                    <AdParameters><![CDATA[ {"ad_free_creative_url":"https://qa-media.truex.com/integration/idvx-desktop/choicecard-idvx-desktop.js","card_configurations":[],"service_url":"qa-measure.truex.com","ads":[{"service_url":"qa-measure.truex.com","service_params":"bid_info=0-wTfw8GFqG4D-sGrLQ9jMMmXWbXNTv4a577hEHFAuKZjoG3MeURZ9hEWSNaT7S62UDA7tF1e2eQccf5f5jMkTdeTF31VwsywUfvchoY2rV9M3zRAcbUjNZ9YLKe9kmFNzADLkqKh9gyHY9vKTebQkRjUTPfR5pa4o7Lf2S62C3J5FpyCrEPowxmy6Cu8YsgysStk4wPYPKjSnBU5LNypZ6fnSutnREJmUALFJjBY8A8842Uf76Hc9vfLo5zeZStNykVbi6zxmNVQKLh1PBh&campaign_id=10030&creative_id=9747&currency_amount=1&env%5B%5D=flash&env%5B%5D=html&impression_signature=da5de99c588c00a8387c73eea26f0cf07e7570798aebd0be4939a5edb6a101a8&impression_timestamp=1745865664.9643412&initials=0&internal_referring_source=EeE1PFses36CtJW4SIMVkg&ip=108.213.126.254&multivariate%5BKevinTest%5D=control&multivariate%5BTestingShouldHave%20Variations%5D=control&network_user_id=tgt_129_20211000_23&placement_hash=dc2b568f1da7c8698e3c0e14f99414247db0b4fa&referrer=&session_id=swIopl4P3WUYHQFEDaB1YA&user_agent=Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F134.0.0.0%20Safari%2F537.36&vault=0-3WV5uriC6Ja-7pLH5YNvzhNqPvyyL9WtUdFvzu7DewmoL6mfXUaJucNo","survey_config_url":"","asset_type":"interactive","pending_true_targeting_requirements":[],"choice_card_images":[],"asset_url":"[studio].js","name":"Kevin Testing IDVX","campaign_id":10030,"session_id":"swIopl4P3WUYHQFEDaB1YA","request_id":"EeE1PFses36CtJW4SIMVkg","image_url":"https://s3.amazonaws.com/media.socialvi.be/assets/17190/gen-124x124.jpg?1362613767","currency_amount":1,"window_url":"https://qa-media.truex.com/container/3.x/current/desktop.html#bid_info%3D0-wTfw8GFqG4D-sGrLQ9jMMmXWbXNTv4a577hEHFAuKZjoG3MeURZ9hEWSNaT7S62UDA7tF1e2eQccf5f5jMkTdeTF31VwsywUfvchoY2rV9M3zRAcbUjNZ9YLKe9kmFNzADLkqKh9gyHY9vKTebQkRjUTPfR5pa4o7Lf2S62C3J5FpyCrEPowxmy6Cu8YsgysStk4wPYPKjSnBU5LNypZ6fnSutnREJmUALFJjBY8A8842Uf76Hc9vfLo5zeZStNykVbi6zxmNVQKLh1PBh%26campaign_id%3D10030%26creative_id%3D9747%26currency_amount%3D1%26env%255B%255D%3Dflash%26env%255B%255D%3Dhtml%26impression_signature%3Dda5de99c588c00a8387c73eea26f0cf07e7570798aebd0be4939a5edb6a101a8%26impression_timestamp%3D1745865664.9643412%26initials%3D0%26internal_referring_source%3DEeE1PFses36CtJW4SIMVkg%26ip%3D108.213.126.254%26multivariate%255BKevinTest%255D%3Dcontrol%26multivariate%255BTestingShouldHave%2520Variations%255D%3Dcontrol%26network_user_id%3Dtgt_129_20211000_23%26placement_hash%3Ddc2b568f1da7c8698e3c0e14f99414247db0b4fa%26referrer%3D%26session_id%3DswIopl4P3WUYHQFEDaB1YA%26user_agent%3DMozilla%252F5.0%2520%2528Macintosh%253B%2520Intel%2520Mac%2520OS%2520X%252010_15_7%2529%2520AppleWebKit%252F537.36%2520%2528KHTML%252C%2520like%2520Gecko%2529%2520Chrome%252F134.0.0.0%2520Safari%252F537.36%26vault%3D0-3WV5uriC6Ja-7pLH5YNvzhNqPvyyL9WtUdFvzu7DewmoL6mfXUaJucNo","window_width":960,"id":9747,"window_height":580,"revenue_amount":"0.0","partner_id":933,"variations":{"KevinTest":"control","TestingShouldHave Variations":"control"}}],"user":{"id":"tgt_129_20211000_23"},"fillable":true,"request_id":"EeE1PFses36CtJW4SIMVkg","xtended_view_fill":[],"choice_card_images":[],"card_creative_url":"https://qa-media.truex.com/integration/idvx-desktop/choicecard-idvx-desktop.js","card_creative_args":{"user_opt_out_capping_disabled": true},"tag_type":"choice_card","placement":{"id":"1484","partner_id":"933","identifier_hash":"dc2b568f1da7c8698e3c0e14f99414247db0b4fa"},"partner_dimensions":{},"vast_session_id":"11XwZVO3kp1Nd0-lst8KTA"} ]]></AdParameters>
-                    <MediaFiles>
-                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
-                    </MediaFiles>
-                  </Linear>
-                </Creative>
-              </Creatives>
-            </InLine>
+              <VASTAdTagURI><![CDATA[https://qa-get.truex.com/placements/dc2b568f1da7c8698e3c0e14f99414247db0b4fa/vast/idvx/generic]]></VASTAdTagURI>
+            </Wrapper>
           </Ad>
           <Ad id="airline-preroll" sequence="3">
             <InLine>
@@ -115,24 +102,11 @@
               </Creatives>
             </InLine>
           </Ad>
-          <Ad id="idvx-preroll" sequence="3">
-            <InLine>
+          <Ad id="idvx-midroll" sequence="3">
+            <Wrapper>
               <AdSystem>IDVx</AdSystem>
-              <AdTitle>Enfamil</AdTitle>
-              <Impression></Impression>
-              <Creatives>
-                <Creative id="idvx-preroll" sequence="3">
-                  <Linear>
-                    <Duration>00:00:30</Duration>
-                    <AdParameters><![CDATA[ {"ad_free_creative_url":"https://qa-media.truex.com/integration/idvx-desktop/choicecard-idvx-desktop.js","card_configurations":[],"service_url":"qa-measure.truex.com","ads":[{"service_url":"qa-measure.truex.com","service_params":"bid_info=0-wTfw8GFqG4D-sGrLQ9jMMmXWbXNTv4a577hEHFAuKZjoG3MeURZ9hEWSNaT7S62UDA7tF1e2eQccf5f5jMkTdeTF31VwsywUfvchoY2rV9M3zRAcbUjNZ9YLKe9kmFNzADLkqKh9gyHY9vKTebQkRjUTPfR5pa4o7Lf2S62C3J5FpyCrEPowxmy6Cu8YsgysStk4wPYPKjSnBU5LNypZ6fnSutnREJmUALFJjBY8A8842Uf76Hc9vfLo5zeZStNykVbi6zxmNVQKLh1PBh&campaign_id=10030&creative_id=9747&currency_amount=1&env%5B%5D=flash&env%5B%5D=html&impression_signature=da5de99c588c00a8387c73eea26f0cf07e7570798aebd0be4939a5edb6a101a8&impression_timestamp=1745865664.9643412&initials=0&internal_referring_source=EeE1PFses36CtJW4SIMVkg&ip=108.213.126.254&multivariate%5BKevinTest%5D=control&multivariate%5BTestingShouldHave%20Variations%5D=control&network_user_id=tgt_129_20211000_23&placement_hash=dc2b568f1da7c8698e3c0e14f99414247db0b4fa&referrer=&session_id=swIopl4P3WUYHQFEDaB1YA&user_agent=Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F134.0.0.0%20Safari%2F537.36&vault=0-3WV5uriC6Ja-7pLH5YNvzhNqPvyyL9WtUdFvzu7DewmoL6mfXUaJucNo","survey_config_url":"","asset_type":"interactive","pending_true_targeting_requirements":[],"choice_card_images":[],"asset_url":"[studio].js","name":"Kevin Testing IDVX","campaign_id":10030,"session_id":"swIopl4P3WUYHQFEDaB1YA","request_id":"EeE1PFses36CtJW4SIMVkg","image_url":"https://s3.amazonaws.com/media.socialvi.be/assets/17190/gen-124x124.jpg?1362613767","currency_amount":1,"window_url":"https://qa-media.truex.com/container/3.x/current/desktop.html#bid_info%3D0-wTfw8GFqG4D-sGrLQ9jMMmXWbXNTv4a577hEHFAuKZjoG3MeURZ9hEWSNaT7S62UDA7tF1e2eQccf5f5jMkTdeTF31VwsywUfvchoY2rV9M3zRAcbUjNZ9YLKe9kmFNzADLkqKh9gyHY9vKTebQkRjUTPfR5pa4o7Lf2S62C3J5FpyCrEPowxmy6Cu8YsgysStk4wPYPKjSnBU5LNypZ6fnSutnREJmUALFJjBY8A8842Uf76Hc9vfLo5zeZStNykVbi6zxmNVQKLh1PBh%26campaign_id%3D10030%26creative_id%3D9747%26currency_amount%3D1%26env%255B%255D%3Dflash%26env%255B%255D%3Dhtml%26impression_signature%3Dda5de99c588c00a8387c73eea26f0cf07e7570798aebd0be4939a5edb6a101a8%26impression_timestamp%3D1745865664.9643412%26initials%3D0%26internal_referring_source%3DEeE1PFses36CtJW4SIMVkg%26ip%3D108.213.126.254%26multivariate%255BKevinTest%255D%3Dcontrol%26multivariate%255BTestingShouldHave%2520Variations%255D%3Dcontrol%26network_user_id%3Dtgt_129_20211000_23%26placement_hash%3Ddc2b568f1da7c8698e3c0e14f99414247db0b4fa%26referrer%3D%26session_id%3DswIopl4P3WUYHQFEDaB1YA%26user_agent%3DMozilla%252F5.0%2520%2528Macintosh%253B%2520Intel%2520Mac%2520OS%2520X%252010_15_7%2529%2520AppleWebKit%252F537.36%2520%2528KHTML%252C%2520like%2520Gecko%2529%2520Chrome%252F134.0.0.0%2520Safari%252F537.36%26vault%3D0-3WV5uriC6Ja-7pLH5YNvzhNqPvyyL9WtUdFvzu7DewmoL6mfXUaJucNo","window_width":960,"id":9747,"window_height":580,"revenue_amount":"0.0","partner_id":933,"variations":{"KevinTest":"control","TestingShouldHave Variations":"control"}}],"user":{"id":"tgt_129_20211000_23"},"fillable":true,"request_id":"EeE1PFses36CtJW4SIMVkg","xtended_view_fill":[],"choice_card_images":[],"card_creative_url":"https://qa-media.truex.com/integration/idvx-desktop/choicecard-idvx-desktop.js","card_creative_args":{"user_opt_out_capping_disabled": true},"tag_type":"choice_card","placement":{"id":"1484","partner_id":"933","identifier_hash":"dc2b568f1da7c8698e3c0e14f99414247db0b4fa"},"partner_dimensions":{},"vast_session_id":"11XwZVO3kp1Nd0-lst8KTA"} ]]></AdParameters>
-                    <MediaFiles>
-                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
-                    </MediaFiles>
-                  </Linear>
-                </Creative>
-              </Creatives>
-            </InLine>
+              <VASTAdTagURI><![CDATA[https://qa-get.truex.com/placements/dc2b568f1da7c8698e3c0e14f99414247db0b4fa/vast/idvx/generic]]></VASTAdTagURI>
+            </Wrapper>
           </Ad>
         </VAST>
       </vmap:VASTAdData>
