@@ -29,25 +29,10 @@
           </Ad>
           <!-- This is the IDVx ad, <AdSystem> MUST be IDVx, the ad can apprear anywhere in the sequence -->
           <Ad id="idvx-preroll" sequence="2">
-            <InLine>
+            <Wrapper>
               <AdSystem>IDVx</AdSystem>
-              <AdTitle>Enfamil</AdTitle>
-              <Impression></Impression>
-              <Description>
-                <![CDATA[https://qa-get.truex.com/fbb70482f4c0ded740f911686d1b9a01a2dd19c9/vast/config?stream_position=preroll&stream_id=1234&network_user_id=1234]]>
-              </Description>
-              <Creatives>
-                <Creative id="idvx-preroll" sequence="2">
-                  <Linear>
-                    <Duration>00:00:30</Duration>
-                    <MediaFiles>
-                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
-                    </MediaFiles>
-                  </Linear>
-                </Creative>
-              </Creatives>
-            </InLine>
+              <VASTAdTagURI><![CDATA[https://qa-get.truex.com/placements/dc2b568f1da7c8698e3c0e14f99414247db0b4fa/vast/idvx/generic]]></VASTAdTagURI>
+            </Wrapper>
           </Ad>
           <Ad id="airline-preroll" sequence="3">
             <InLine>
@@ -117,26 +102,11 @@
               </Creatives>
             </InLine>
           </Ad>
-          <Ad id="idvx-preroll" sequence="3">
-            <InLine>
+          <Ad id="idvx-midroll" sequence="3">
+            <Wrapper>
               <AdSystem>IDVx</AdSystem>
-              <AdTitle>Enfamil</AdTitle>
-              <Impression></Impression>
-              <Description>
-                <![CDATA[https://qa-get.truex.com/fbb70482f4c0ded740f911686d1b9a01a2dd19c9/vast/config?stream_position=preroll&stream_id=1234&network_user_id=1234" />]]>
-              </Description>
-              <Creatives>
-                <Creative id="idvx-preroll" sequence="3">
-                  <Linear>
-                    <Duration>00:00:30</Duration>
-                    <MediaFiles>
-                      <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
-                    </MediaFiles>
-                  </Linear>
-                </Creative>
-              </Creatives>
-            </InLine>
+              <VASTAdTagURI><![CDATA[https://qa-get.truex.com/placements/dc2b568f1da7c8698e3c0e14f99414247db0b4fa/vast/idvx/generic]]></VASTAdTagURI>
+            </Wrapper>
           </Ad>
         </VAST>
       </vmap:VASTAdData>
