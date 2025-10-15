@@ -53,7 +53,7 @@ export class BitmovinController {
                         position: 'pre',
                         tag: {
                             type: 'vast',
-                            url: 'https://s3.us-east-1.amazonaws.com/stash.truex.com/sample-tags/csai-html5/sample-ad-playlist.xml'
+                            url: 'https://s3.us-east-1.amazonaws.com/stash.truex.com/sample-tags/csai-ima-html5/sample-ad-playlist.xml'
                         }
                     }
                 ],
