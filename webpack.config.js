@@ -19,6 +19,10 @@ module.exports = function(env) {
                 './src/videojs/videojs-demo.js',
                 './src/videojs/videojs-demo.scss'
             ],
+            bitmovin: [
+                './src/bitmovin/bitmovin-demo.js',
+                './src/bitmovin/bitmovin-demo.scss'
+            ],
         },
         output: {
             filename: '[name].[hash].js',
@@ -84,6 +88,11 @@ module.exports = function(env) {
                 filename: 'videojs-demo.html',
                 template: './src/index.html',
                 chunks: ['videojs'],
+            }),
+            new HtmlWebpackPlugin({
+                filename: 'bitmovin-demo.html',
+                template: './src/index.html',
+                chunks: ['bitmovin'],
             })
         ],
         devtool: 'cheap-module-source-map'

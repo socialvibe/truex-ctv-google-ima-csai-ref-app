@@ -20,7 +20,8 @@
                     <Duration>00:00:30</Duration>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]></MediaFile>
+                        <![CDATA[https://media.truex.com/m/video/truexloadingplaceholder-30s.mp4]]>
+                      </MediaFile>
                     </MediaFiles>
                   </Linear>
                 </Creative>
@@ -46,7 +47,8 @@
                     <Duration>00:00:30</Duration>
                     <MediaFiles>
                       <MediaFile delivery="progressive" width="1280" height="720" type="video/mp4" scalable="true" maintainAspectRatio="true">
-                        <![CDATA[https://ctv.truex.com/assets/airline-720p.mp4]]></MediaFile>
+                        <![CDATA[https://ctv.truex.com/assets/airline-720p.mp4]]>
+                      </MediaFile>
                     </MediaFiles>
                   </Linear>
                 </Creative>
